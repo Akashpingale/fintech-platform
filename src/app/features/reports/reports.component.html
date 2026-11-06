@@ -1,0 +1,158 @@
+<div class="page">
+  <app-page-header
+    title="Reports"
+    subtitle="Generate a statement as PDF, or export the raw rows as CSV."
+  >
+    <mat-form-field slot="actions" appearance="outline" class="period-picker">
+      <mat-label>Period</mat-label>
+      <mat-select [ngModel]="selection()" (ngModelChange)="selection.set($event)">
+        @for (option of periodOptions(); track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </app-page-header>
+
+  <!-- Period summary -->
+  <section class="card period-summary">
+    <div>
+      <h2 class="section-title" style="margin: 0">{{ periodLabel() }}</h2>
+      <p class="section-subtitle">
+        {{ summary().count }} transaction{{ summary().count === 1 ? '' : 's' }}
+        in this period
+      </p>
+    </div>
+
+    <div class="period-summary__figures">
+      <div class="kv">
+        <span class="kv__key">Income</span>
+        <span class="kv__value gain">{{ summary().income | money }}</span>
+      </div>
+      <div class="kv">
+        <span class="kv__key">Expense</span>
+        <span class="kv__value loss">{{ summary().expense | money }}</span>
+      </div>
+      <div class="kv">
+        <span class="kv__key">Net savings</span>
+        <span
+          class="kv__value"
+          [class.gain]="summary().savings >= 0"
+          [class.loss]="summary().savings < 0"
+          >{{ summary().savings | money }}</span
+        >
+      </div>
+      <div class="kv">
+        <span class="kv__key">Savings rate</span>
+        <span class="kv__value">{{ summary().rate | number: '1.0-1' }}%</span>
+      </div>
+    </div>
+  </section>
+
+  @if (!hasRows()) {
+    <div class="card mt-4">
+      <app-empty-state
+        icon="description"
+        title="No transactions in this period"
+        message="Pick a different period, or record some transactions first."
+      />
+    </div>
+  }
+
+  <!-- Report cards -->
+  <div class="grid grid--3 mt-5">
+    <article class="card report-card">
+      <span class="report-card__icon tone-primary">
+        <mat-icon>receipt_long</mat-icon>
+      </span>
+      <h3 class="report-card__title">Income &amp; expense statement</h3>
+      <p class="report-card__body">
+        Summary figures, a category breakdown and every transaction in
+        {{ periodLabel() }}.
+      </p>
+      <div class="report-card__actions">
+        <button
+          type="button"
+          class="btn btn--primary"
+          (click)="statementPdf()"
+          [disabled]="!hasRows()"
+        >
+          <mat-icon>picture_as_pdf</mat-icon>
+          PDF
+        </button>
+        <button
+          type="button"
+          class="btn btn--ghost"
+          (click)="statementCsv()"
+          [disabled]="!hasRows()"
+        >
+          <mat-icon>download</mat-icon>
+          CSV
+        </button>
+      </div>
+    </article>
+
+    <article class="card report-card">
+      <span class="report-card__icon tone-success">
+        <mat-icon>trending_up</mat-icon>
+      </span>
+      <h3 class="report-card__title">Portfolio statement</h3>
+      <p class="report-card__body">
+        Every holding with invested amount, current value, P/L and return, plus
+        portfolio XIRR.
+      </p>
+      <div class="report-card__actions">
+        <button
+          type="button"
+          class="btn btn--primary"
+          (click)="portfolioPdf()"
+          [disabled]="holdings().length === 0"
+        >
+          <mat-icon>picture_as_pdf</mat-icon>
+          PDF
+        </button>
+        <button
+          type="button"
+          class="btn btn--ghost"
+          (click)="portfolioCsv()"
+          [disabled]="holdings().length === 0"
+        >
+          <mat-icon>download</mat-icon>
+          CSV
+        </button>
+      </div>
+    </article>
+
+    <article class="card report-card">
+      <span class="report-card__icon tone-warning">
+        <mat-icon>flag</mat-icon>
+      </span>
+      <h3 class="report-card__title">Budgets &amp; goals</h3>
+      <p class="report-card__body">
+        This month's budget usage against limits, and progress on every savings
+        goal.
+      </p>
+      <div class="report-card__actions">
+        <button type="button" class="btn btn--primary" (click)="planningPdf()">
+          <mat-icon>picture_as_pdf</mat-icon>
+          PDF
+        </button>
+        <button type="button" class="btn btn--ghost" (click)="budgetsCsv()">
+          <mat-icon>download</mat-icon>
+          Budgets
+        </button>
+        <button type="button" class="btn btn--ghost" (click)="goalsCsv()">
+          <mat-icon>download</mat-icon>
+          Goals
+        </button>
+      </div>
+    </article>
+  </div>
+
+  <p class="note muted mt-5">
+    <mat-icon>info_outline</mat-icon>
+    PDFs print amounts as <code>Rs.</code> rather than <code>₹</code>: the
+    built-in PDF font has no rupee glyph, and embedding a Unicode font would add
+    roughly 400 kB to the bundle for one character. CSV exports use plain
+    numbers, so they open cleanly in Excel or Google Sheets.
+  </p>
+</div>

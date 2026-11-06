@@ -1,0 +1,254 @@
+<div class="page">
+  <app-page-header
+    title="Analytics & insights"
+    [subtitle]="
+      analytics.currentMonth().label +
+      ' · savings rate ' +
+      (analytics.currentMonth().savingsRatePercent | number: '1.0-0') +
+      '%'
+    "
+  >
+    <div slot="actions" class="range-tabs" role="tablist" aria-label="Comparison period">
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="view() === 'monthly'"
+        [class.active]="view() === 'monthly'"
+        (click)="setView('monthly')"
+      >
+        Monthly
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="view() === 'yearly'"
+        [class.active]="view() === 'yearly'"
+        (click)="setView('yearly')"
+      >
+        Yearly
+      </button>
+    </div>
+  </app-page-header>
+
+  @if (loading()) {
+    <div class="card"><app-skeleton [rows]="6" height="26px" /></div>
+  } @else if (!hasData()) {
+    <div class="card">
+      <app-empty-state
+        icon="bar_chart"
+        title="Nothing to analyse yet"
+        message="Analytics are derived from your transactions, budgets and portfolio. Record a few transactions and this page comes to life."
+      />
+    </div>
+  } @else {
+    <!-- ─────────────── Health score ─────────────── -->
+    <section class="grid grid--split">
+      <div class="card health">
+        <div>
+          <h2 class="section-title" style="margin: 0">Financial health score</h2>
+          <p class="section-subtitle mb-4">
+            Weighted across savings rate (30%), budget adherence (25%),
+            diversification (25%) and emergency fund (20%).
+          </p>
+        </div>
+        <app-health-gauge [score]="health().score" [band]="health().band" />
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Score breakdown</h2>
+        <div class="stack">
+          @for (component of health().components; track component.label) {
+            <div class="component">
+              <div class="flex-between">
+                <span class="component__label">
+                  {{ component.label }}
+                  <span class="component__weight">{{ component.weight }}%</span>
+                </span>
+                <span class="num component__score">{{ component.score }}/100</span>
+              </div>
+              <div class="progress">
+                <div
+                  class="progress__bar"
+                  [class.progress__bar--warn]="component.score < 60 && component.score >= 35"
+                  [class.progress__bar--danger]="component.score < 35"
+                  [style.width.%]="component.score"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="kv mt-4">
+          <span class="kv__key">Emergency fund cover</span>
+          <span class="kv__value">
+            {{ analytics.emergencyFundMonths() | number: '1.1-1' }} months
+          </span>
+        </div>
+        <div class="kv">
+          <span class="kv__key">Average monthly expense</span>
+          <span class="kv__value">
+            {{ analytics.averageMonthlyExpense() | money }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────── Insights ─────────────── -->
+    <section class="mt-5">
+      <h2 class="section-title">What stands out</h2>
+      @if (insights().length === 0) {
+        <p class="muted">
+          Not enough history yet to draw comparisons. Come back after another
+          month of transactions.
+        </p>
+      } @else {
+        <div class="grid grid--3">
+          @for (insight of insights(); track insight.text) {
+            <div class="insight">
+              <span class="insight__icon" [class]="'tone-' + insight.tone">
+                <mat-icon>{{ insight.icon }}</mat-icon>
+              </span>
+              <p class="insight__text">{{ insight.text }}</p>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- ─────────────── Comparison chart ─────────────── -->
+    <div class="mt-5">
+      <app-chart-card
+        [title]="view() === 'monthly' ? 'Monthly comparison' : 'Yearly comparison'"
+        [subtitle]="
+          view() === 'monthly'
+            ? 'Income against expense over the last 12 months'
+            : 'Income against expense by calendar year'
+        "
+        type="bar"
+        [data]="comparisonData()"
+        [options]="comparisonOptions()"
+        [height]="320"
+      />
+    </div>
+
+    <!-- ─────────────── Trends ─────────────── -->
+    <div class="grid grid--split mt-5">
+      <app-chart-card
+        title="Savings rate trend"
+        subtitle="Share of income kept each month"
+        type="line"
+        [data]="savingsRateData()"
+        [options]="savingsRateOptions()"
+        [height]="280"
+      />
+
+      <app-chart-card
+        title="Top spending categories"
+        [subtitle]="analytics.currentMonth().label"
+        type="bar"
+        [data]="categoryTrendData()"
+        [options]="categoryTrendOptions()"
+        [height]="280"
+        emptyTitle="No expenses this month"
+        emptyMessage="Log an expense to see which categories dominate."
+      />
+    </div>
+
+    <!-- ─────────────── Month over month table ─────────────── -->
+    <div class="table-wrap mt-5">
+      <div class="table-head">
+        <h2 class="section-title" style="margin: 0">Month by month</h2>
+        <p class="section-subtitle">
+          Income, expense and what you kept, newest first.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th class="num">Income</th>
+              <th class="num">Expense</th>
+              <th class="num">Saved</th>
+              <th class="num">Savings rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (month of analytics.monthlySeries().slice().reverse(); track month.key) {
+              <tr>
+                <td class="cell-title">{{ month.label }}</td>
+                <td class="num gain">{{ month.income | money }}</td>
+                <td class="num loss">{{ month.expense | money }}</td>
+                <td
+                  class="num"
+                  [class.gain]="month.savings >= 0"
+                  [class.loss]="month.savings < 0"
+                >
+                  {{ month.savings | money }}
+                </td>
+                <td class="num">
+                  <span
+                    class="badge"
+                    [class.badge--gain]="month.savingsRatePercent >= 20"
+                    [class.badge--warn]="
+                      month.savingsRatePercent < 20 && month.savingsRatePercent >= 0
+                    "
+                    [class.badge--loss]="month.savingsRatePercent < 0"
+                  >
+                    {{ month.savingsRatePercent | number: '1.0-1' }}%
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─────────────── Category detail ─────────────── -->
+    @if (analytics.topCategories().length > 0) {
+      <section class="card mt-5">
+        <h2 class="section-title">Category detail</h2>
+        <p class="section-subtitle mb-4">
+          {{ analytics.currentMonth().label }} expenses, with each category's
+          share of the month.
+        </p>
+
+        <div class="stack">
+          @for (row of analytics.topCategories(); track row.category; let i = $index) {
+            <div class="cat-row">
+              <span
+                class="cat-avatar"
+                [style.background]="colourFor(row.category, i) + '22'"
+                [style.color]="colourFor(row.category, i)"
+              >
+                <mat-icon>{{ iconFor(row.category) }}</mat-icon>
+              </span>
+              <div class="cat-row__body">
+                <div class="flex-between">
+                  <span class="cell-title">{{ row.category }}</span>
+                  <span class="num">{{ row.total | money }}</span>
+                </div>
+                <div class="progress">
+                  <div
+                    class="progress__bar"
+                    [style.width.%]="shareOf(row.total)"
+                    [style.background]="colourFor(row.category, i)"
+                  ></div>
+                </div>
+              </div>
+              <span class="num cat-row__share">
+                {{ shareOf(row.total) | number: '1.0-1' }}%
+              </span>
+            </div>
+          }
+        </div>
+
+        <a class="btn btn--ghost mt-4" routerLink="/reports">
+          <mat-icon>description</mat-icon>
+          Export a full statement
+        </a>
+      </section>
+    }
+  }
+</div>

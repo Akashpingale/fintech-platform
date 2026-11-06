@@ -1,0 +1,62 @@
+// Tax-estimator specific styles; shared calculator layout comes from
+// ../calculator.shared.scss, listed first in the component's styleUrls.
+
+.regime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: var(--sp-4);
+}
+
+.regime {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.regime--better {
+  border-color: var(--success);
+  box-shadow: 0 0 0 1px var(--success-soft), var(--sh-sm);
+}
+
+.regime__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.regime__title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.regime__total {
+  font-size: 1.75rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.regime__rate {
+  font-size: var(--fs-caption);
+  color: var(--text-muted);
+}
+
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--success-soft);
+  color: var(--success);
+  font-weight: 500;
+
+  mat-icon {
+    flex-shrink: 0;
+  }
+}
+
+.slab-rate {
+  font-weight: 700;
+}

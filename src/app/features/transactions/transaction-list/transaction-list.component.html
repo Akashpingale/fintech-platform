@@ -1,0 +1,318 @@
+<div class="page">
+  <app-page-header title="Transactions" [subtitle]="subtitle()">
+    <div slot="actions" class="row-wrap">
+      <input
+        #fileInput
+        type="file"
+        accept=".csv,text/csv"
+        class="visually-hidden"
+        (change)="onFileSelected($event)"
+      />
+
+      <button
+        type="button"
+        class="btn btn--ghost"
+        [matMenuTriggerFor]="moreMenu"
+      >
+        <mat-icon>more_horiz</mat-icon>
+        More
+      </button>
+
+      <mat-menu #moreMenu="matMenu">
+        <button mat-menu-item (click)="fileInput.click()" [disabled]="importing()">
+          <mat-icon>upload_file</mat-icon>
+          <span>{{ importing() ? 'Importing…' : 'Import CSV' }}</span>
+        </button>
+        <button mat-menu-item (click)="exportCsv()">
+          <mat-icon>download</mat-icon>
+          <span>Export CSV</span>
+        </button>
+        <button mat-menu-item (click)="exportPdf()">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>Export PDF statement</span>
+        </button>
+        <button mat-menu-item (click)="generateRecurring()">
+          <mat-icon>autorenew</mat-icon>
+          <span>Generate recurring entries</span>
+        </button>
+      </mat-menu>
+
+      <a class="btn btn--primary" routerLink="/transactions/new">
+        <mat-icon>add</mat-icon>
+        Add transaction
+      </a>
+    </div>
+  </app-page-header>
+
+  <!-- Totals for the current filter -->
+  <div class="totals-strip">
+    <div class="totals-strip__item">
+      <span class="label">Income</span>
+      <span class="value gain num">{{ totals().income | money }}</span>
+    </div>
+    <div class="totals-strip__item">
+      <span class="label">Expense</span>
+      <span class="value loss num">{{ totals().expense | money }}</span>
+    </div>
+    <div class="totals-strip__item">
+      <span class="label">Net</span>
+      <span
+        class="value num"
+        [class.gain]="totals().net >= 0"
+        [class.loss]="totals().net < 0"
+        >{{ totals().net | money }}</span
+      >
+    </div>
+  </div>
+
+  <!-- ─────────────── Filter bar ─────────────── -->
+  <div class="filter-bar">
+    <mat-form-field appearance="outline" class="filter-bar__search">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        type="search"
+        [ngModel]="filter().search"
+        (ngModelChange)="setSearch($event)"
+        placeholder="Category, note, tag or amount"
+      />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select
+        [ngModel]="filter().type"
+        (ngModelChange)="setType($event)"
+      >
+        <mat-option value="all">All</mat-option>
+        <mat-option value="income">Income</mat-option>
+        <mat-option value="expense">Expense</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>From</mat-label>
+      <input
+        matInput
+        type="date"
+        [ngModel]="filter().from"
+        (ngModelChange)="setDate('from', $event)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>To</mat-label>
+      <input
+        matInput
+        type="date"
+        [ngModel]="filter().to"
+        (ngModelChange)="setDate('to', $event)"
+      />
+    </mat-form-field>
+
+    @if (hasActiveFilter()) {
+      <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+        <mat-icon>filter_alt_off</mat-icon>
+        Clear
+      </button>
+    }
+  </div>
+
+  <!-- Category chips -->
+  @if (categories().length > 0) {
+    <div class="chip-row mb-4">
+      @for (category of categories(); track category) {
+        <button
+          type="button"
+          class="chip"
+          [class.active]="isCategoryActive(category)"
+          [attr.aria-pressed]="isCategoryActive(category)"
+          (click)="toggleCategory(category)"
+        >
+          <mat-icon class="chip-icon">{{ iconFor(category) }}</mat-icon>
+          {{ category }}
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Bulk action bar -->
+  @if (selected().size > 0) {
+    <div class="bulk-bar" role="region" aria-label="Bulk actions">
+      <span>{{ selected().size }} selected</span>
+      <div class="row-wrap">
+        <button type="button" class="btn btn--ghost" (click)="clearSelection()">
+          Clear selection
+        </button>
+        <button type="button" class="btn btn--danger" (click)="bulkDelete()">
+          <mat-icon>delete</mat-icon>
+          Delete selected
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ─────────────── Table ─────────────── -->
+  @if (loading()) {
+    <div class="card">
+      <app-skeleton [rows]="8" height="42px" />
+    </div>
+  } @else if (totals().count === 0) {
+    <div class="card">
+      <app-empty-state
+        icon="receipt_long"
+        [title]="
+          hasActiveFilter()
+            ? 'No transactions match these filters'
+            : 'No transactions yet'
+        "
+        [message]="
+          hasActiveFilter()
+            ? 'Try widening the date range or clearing the category chips.'
+            : 'Record your income and expenses to build up your dashboard, budgets and analytics.'
+        "
+        [actionLabel]="hasActiveFilter() ? 'Clear filters' : ''"
+        actionIcon="filter_alt_off"
+        (action)="clearFilters()"
+      />
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-check">
+                <mat-checkbox
+                  [checked]="allOnPageSelected()"
+                  (change)="togglePage()"
+                  aria-label="Select all rows on this page"
+                />
+              </th>
+              <th class="sortable" (click)="sortBy('category')">
+                Category
+                <mat-icon class="sort-icon">{{ sortIcon('category') }}</mat-icon>
+              </th>
+              <th class="sortable" (click)="sortBy('date')">
+                Date
+                <mat-icon class="sort-icon">{{ sortIcon('date') }}</mat-icon>
+              </th>
+              <th>Method</th>
+              <th>Tags</th>
+              <th class="num sortable" (click)="sortBy('amount')">
+                Amount
+                <mat-icon class="sort-icon">{{ sortIcon('amount') }}</mat-icon>
+              </th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tx of page(); track tx.id) {
+              <tr [class.selected]="isSelected(tx.id)">
+                <td class="col-check">
+                  <mat-checkbox
+                    [checked]="isSelected(tx.id)"
+                    (change)="toggleRow(tx.id)"
+                    [attr.aria-label]="'Select ' + tx.category + ' on ' + tx.date"
+                  />
+                </td>
+                <td>
+                  <div class="cell-with-avatar">
+                    <span
+                      class="cat-avatar"
+                      [style.background]="colourFor(tx.category) + '22'"
+                      [style.color]="colourFor(tx.category)"
+                    >
+                      <mat-icon>{{ iconFor(tx.category) }}</mat-icon>
+                    </span>
+                    <span>
+                      <span class="cell-title">{{ tx.category }}</span>
+                      @if (tx.notes) {
+                        <span class="cell-sub">{{ tx.notes }}</span>
+                      }
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  {{ tx.date }}
+                  @if (tx.recurring) {
+                    <mat-icon
+                      class="recurring-icon"
+                      [matTooltip]="'Repeats ' + tx.recurring.frequency"
+                      >autorenew</mat-icon
+                    >
+                  }
+                </td>
+                <td>
+                  <span class="method">
+                    <mat-icon>{{ paymentIcons[tx.paymentMethod] }}</mat-icon>
+                    {{ tx.paymentMethod.toUpperCase() }}
+                  </span>
+                </td>
+                <td>
+                  @if (tx.tags && tx.tags.length) {
+                    <span class="tag-list">
+                      @for (tag of tx.tags; track tag) {
+                        <span class="badge badge--info">{{ tag }}</span>
+                      }
+                    </span>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td
+                  class="num amount-cell"
+                  [class.gain]="tx.type === 'income'"
+                  [class.loss]="tx.type === 'expense'"
+                >
+                  {{ tx.type === 'income' ? '+' : '−' }}{{ tx.amount | money }}
+                </td>
+                <td class="col-actions">
+                  <div class="row-actions">
+                    <button
+                      type="button"
+                      class="icon-action"
+                      (click)="edit(tx)"
+                      matTooltip="Edit"
+                      [attr.aria-label]="'Edit ' + tx.category"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-action icon-action--danger"
+                      (click)="remove(tx)"
+                      matTooltip="Delete"
+                      [attr.aria-label]="'Delete ' + tx.category"
+                    >
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <mat-paginator
+        [length]="totals().count"
+        [pageSize]="pageSize()"
+        [pageIndex]="pageIndex()"
+        [pageSizeOptions]="[10, 25, 50, 100]"
+        (page)="onPage($event)"
+        aria-label="Select page of transactions"
+      />
+    </div>
+  }
+
+  <a
+    class="btn btn--primary fab"
+    routerLink="/transactions/new"
+    aria-label="Add transaction"
+  >
+    <mat-icon>add</mat-icon>
+    <span class="fab-label">Add</span>
+  </a>
+</div>

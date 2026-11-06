@@ -1,0 +1,176 @@
+<div class="page">
+  <app-page-header
+    title="Savings goals"
+    [subtitle]="
+      summary().achieved +
+      ' of ' +
+      progress().length +
+      ' achieved' +
+      (summary().behind > 0 ? ' · ' + summary().behind + ' behind schedule' : '')
+    "
+  >
+    <button slot="actions" type="button" class="btn btn--primary" (click)="create()">
+      <mat-icon>add</mat-icon>
+      New goal
+    </button>
+  </app-page-header>
+
+  <div class="grid grid--stats">
+    <app-stat-card
+      label="Total saved"
+      icon="savings"
+      tone="success"
+      [value]="summary().saved"
+      [hint]="'Across ' + progress().length + ' goals'"
+    />
+    <app-stat-card
+      label="Combined target"
+      icon="flag"
+      tone="primary"
+      [value]="summary().target"
+      [hint]="
+        summary().target > 0
+          ? ((summary().saved / summary().target) * 100 | number: '1.0-0') + '% funded'
+          : 'No targets set'
+      "
+    />
+    <app-stat-card
+      label="Needed per month"
+      icon="event_repeat"
+      tone="warning"
+      [value]="summary().monthlyNeeded"
+      hint="To hit every deadline on time"
+    />
+    <app-stat-card
+      label="Goals achieved"
+      icon="emoji_events"
+      tone="success"
+      [value]="summary().achieved"
+      format="number"
+      [hint]="progress().length - summary().achieved + ' still in progress'"
+    />
+  </div>
+
+  @if (loading()) {
+    <div class="grid grid--cards mt-5">
+      @for (placeholder of [1, 2, 3]; track placeholder) {
+        <div class="card"><app-skeleton [rows]="4" height="20px" /></div>
+      }
+    </div>
+  } @else if (progress().length === 0) {
+    <div class="card mt-5">
+      <app-empty-state
+        icon="flag"
+        title="No savings goals yet"
+        message="Create a goal with a target amount and date, and FinTrack works out what you need to set aside each month."
+        actionLabel="Create your first goal"
+        (action)="create()"
+      />
+    </div>
+  } @else {
+    <div class="grid grid--cards mt-5">
+      @for (row of progress(); track row.goal.id) {
+        <article
+          class="card goal-card"
+          [class.goal-card--done]="row.status === 'achieved'"
+          [class.celebrate]="isCelebrating(row.goal.id)"
+        >
+          <header class="goal-card__head">
+            <div class="goal-card__title">
+              <h2 class="cell-title goal-card__name">{{ row.goal.name }}</h2>
+              <span class="cell-sub">
+                <mat-icon class="inline-icon">event</mat-icon>
+                {{ row.goal.deadline }} · {{ deadlineLabel(row) }}
+              </span>
+            </div>
+            <div class="goal-card__actions">
+              <button
+                type="button"
+                class="icon-action"
+                (click)="edit(row)"
+                matTooltip="Edit goal"
+                [attr.aria-label]="'Edit ' + row.goal.name"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="icon-action icon-action--danger"
+                (click)="remove(row)"
+                matTooltip="Delete goal"
+                [attr.aria-label]="'Delete ' + row.goal.name"
+              >
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          </header>
+
+          <div class="goal-card__body">
+            <app-progress-ring
+              [percent]="row.percent"
+              [label]="row.goal.name"
+              [size]="104"
+              [thickness]="10"
+            />
+
+            <div class="goal-card__figures">
+              <div class="kv">
+                <span class="kv__key">Saved</span>
+                <span class="kv__value gain">{{ row.goal.savedAmount | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Target</span>
+                <span class="kv__value">{{ row.goal.targetAmount | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Remaining</span>
+                <span class="kv__value">{{ row.remaining | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Per month</span>
+                <span class="kv__value">
+                  {{ row.status === 'achieved' ? '—' : (row.monthlyNeeded | money) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <footer class="goal-card__foot">
+            <span
+              class="badge"
+              [class.badge--gain]="row.status === 'achieved'"
+              [class.badge--info]="row.status === 'on_track'"
+              [class.badge--warn]="row.status === 'behind'"
+            >
+              @if (row.status === 'achieved') {
+                <mat-icon class="badge-icon">check_circle</mat-icon>
+              } @else if (row.status === 'behind') {
+                <mat-icon class="badge-icon">warning_amber</mat-icon>
+              } @else {
+                <mat-icon class="badge-icon">trending_up</mat-icon>
+              }
+              {{ statusLabel(row) }}
+            </span>
+
+            <button
+              type="button"
+              class="btn btn--ghost btn--compact"
+              (click)="contribute(row)"
+            >
+              <mat-icon>savings</mat-icon>
+              {{ row.status === 'achieved' ? 'Adjust' : 'Add money' }}
+            </button>
+          </footer>
+
+          @if (isCelebrating(row.goal.id)) {
+            <div class="confetti" aria-hidden="true">
+              @for (piece of confettiPieces; track piece) {
+                <span class="confetti__piece" [style.--i]="piece"></span>
+              }
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>

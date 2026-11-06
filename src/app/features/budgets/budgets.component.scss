@@ -1,0 +1,113 @@
+.month-picker {
+  min-width: 170px;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+.overall__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.overall__pct {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.overall__bar {
+  height: 12px;
+}
+
+.badge-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+// ───────────────────────────── Budget cards ─────────────────────────────
+.budget-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.budget-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.budget-card__title {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.budget-card__actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0.55;
+  transition: opacity var(--t-fast);
+}
+
+.budget-card:hover .budget-card__actions,
+.budget-card:focus-within .budget-card__actions {
+  opacity: 1;
+}
+
+.budget-card__figures {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.budget-card__spent {
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.budget-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-muted);
+}
+
+.icon-action {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--r-sm);
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+
+  mat-icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+  }
+
+  &:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+}
+
+.icon-action--danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}

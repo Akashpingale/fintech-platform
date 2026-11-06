@@ -1,0 +1,116 @@
+<div class="page">
+  <app-page-header
+    title="SIP calculator"
+    subtitle="Project what a monthly investment could grow to."
+  />
+
+  <app-calculator-nav />
+
+  <div class="grid grid--calc">
+    <!-- Inputs -->
+    <form class="card input-card" [formGroup]="form">
+      <h2 class="section-title">Your plan</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Monthly investment (₹)</mat-label>
+        <input
+          matInput
+          type="number"
+          min="500"
+          step="500"
+          formControlName="monthlyInvestment"
+        />
+        <mat-icon matPrefix>currency_rupee</mat-icon>
+      </mat-form-field>
+
+      <div class="slider-row">
+        <label for="sip-amount">
+          <span>Monthly amount</span>
+          <strong>{{ form.controls.monthlyInvestment.value | money }}</strong>
+        </label>
+        <mat-slider min="500" max="200000" step="500" discrete>
+          <input matSliderThumb formControlName="monthlyInvestment" id="sip-amount" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="sip-return">
+          <span>Expected annual return</span>
+          <strong>{{ form.controls.annualReturn.value }}%</strong>
+        </label>
+        <mat-slider min="1" max="30" step="0.5" discrete>
+          <input matSliderThumb formControlName="annualReturn" id="sip-return" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="sip-years">
+          <span>Duration</span>
+          <strong>
+            {{ form.controls.years.value }}
+            year{{ form.controls.years.value === 1 ? '' : 's' }}
+          </strong>
+        </label>
+        <mat-slider min="1" max="40" step="1" discrete>
+          <input matSliderThumb formControlName="years" id="sip-years" />
+        </mat-slider>
+      </div>
+
+      <p class="disclaimer">
+        <mat-icon>info_outline</mat-icon>
+        <span>
+          Uses the standard SIP formula with the return compounded monthly and
+          each instalment invested at the start of the month. A constant return
+          is an assumption, not a forecast.
+        </span>
+      </p>
+    </form>
+
+    <!-- Results -->
+    <div class="stack">
+      <section class="result-hero">
+        <div class="result-hero__label">Estimated value at maturity</div>
+        <div class="result-hero__value">{{ result().futureValue | money }}</div>
+
+        <div class="result-hero__row">
+          <div>
+            <div class="label">Total invested</div>
+            <div class="value">{{ result().investedAmount | money }}</div>
+          </div>
+          <div>
+            <div class="label">Estimated returns</div>
+            <div class="value">{{ result().totalInterest | money }}</div>
+          </div>
+          <div>
+            <div class="label">Returns share</div>
+            <div class="value">{{ gainShare() | number: '1.0-1' }}%</div>
+          </div>
+          <div>
+            <div class="label">Instalments</div>
+            <div class="value">{{ form.controls.years.value * 12 }}</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid grid--split">
+        <app-chart-card
+          title="Invested vs returns"
+          subtitle="Split of the maturity value"
+          type="doughnut"
+          [data]="splitData()"
+          [options]="splitOptions()"
+          [height]="240"
+        />
+
+        <app-chart-card
+          title="Growth over time"
+          subtitle="Contribution and accumulated return by year"
+          type="bar"
+          [data]="chartData()"
+          [options]="chartOptions()"
+          [height]="240"
+        />
+      </div>
+    </div>
+  </div>
+</div>

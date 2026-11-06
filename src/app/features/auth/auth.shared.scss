@@ -1,0 +1,197 @@
+// Shared styles for the login, register and hero panels.
+// All values come from the design tokens in styles.scss.
+
+:host {
+  display: block;
+}
+
+// ─────────────────────────────── Hero side ───────────────────────────────
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font: 800 1.5rem 'Plus Jakarta Sans', sans-serif;
+  margin-bottom: var(--sp-7);
+  position: relative;
+
+  mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.hero-headline {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 800;
+  max-width: 20ch;
+  margin-bottom: var(--sp-4);
+  position: relative;
+}
+
+.hero-copy {
+  max-width: 46ch;
+  opacity: 0.88;
+  margin: 0 0 var(--sp-6);
+  position: relative;
+}
+
+.hero-points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--sp-4);
+  position: relative;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+
+  strong {
+    display: block;
+    font-weight: 600;
+  }
+
+  em {
+    font-style: normal;
+    font-size: var(--fs-caption);
+    opacity: 0.78;
+  }
+}
+
+.hero-points__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.hero-footnote {
+  margin: var(--sp-7) 0 0;
+  font-size: var(--fs-caption);
+  opacity: 0.7;
+  position: relative;
+}
+
+// ─────────────────────────────── Form side ───────────────────────────────
+.auth-title {
+  font-size: var(--fs-h1);
+  font-weight: 700;
+}
+
+.auth-sub {
+  margin: var(--sp-2) 0 var(--sp-5);
+}
+
+form {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.icon-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--sp-2);
+
+  &:hover { color: var(--text); }
+}
+
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-sm);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: var(--sp-2);
+  min-height: 44px;
+
+  &[disabled] {
+    opacity: 0.75;
+    cursor: progress;
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.demo-box {
+  margin-top: var(--sp-5);
+  padding: var(--sp-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+
+  p { margin: var(--sp-1) 0 var(--sp-3); font-size: 0.875rem; }
+
+  .btn { width: 100%; }
+}
+
+.demo-box__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--primary);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.auth-switch {
+  text-align: center;
+  margin: var(--sp-5) 0 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+
+  a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.risk-hint {
+  font-size: var(--fs-caption);
+  color: var(--text-muted);
+  margin: 0 0 var(--sp-2);
+}

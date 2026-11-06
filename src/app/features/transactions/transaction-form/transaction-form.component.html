@@ -1,0 +1,169 @@
+<div class="page page--narrow">
+  <app-page-header
+    [title]="isEdit() ? 'Edit transaction' : 'Add transaction'"
+    [subtitle]="
+      isEdit()
+        ? 'Update the details and save your changes.'
+        : 'Record an income or expense entry.'
+    "
+  >
+    <a slot="actions" class="btn btn--ghost" routerLink="/transactions">
+      <mat-icon>arrow_back</mat-icon>
+      Back to list
+    </a>
+  </app-page-header>
+
+  @if (notFound()) {
+    <div class="card">
+      <p class="muted">
+        That transaction no longer exists. It may have been deleted.
+      </p>
+      <a class="btn btn--primary mt-4" routerLink="/transactions">
+        Back to transactions
+      </a>
+    </div>
+  } @else {
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <!-- Type -->
+      <fieldset class="field-group">
+        <legend class="field-legend">Type</legend>
+        <mat-button-toggle-group
+          formControlName="type"
+          aria-label="Transaction type"
+          class="type-toggle"
+        >
+          <mat-button-toggle value="expense">
+            <mat-icon>north_east</mat-icon>
+            Expense
+          </mat-button-toggle>
+          <mat-button-toggle value="income">
+            <mat-icon>south_west</mat-icon>
+            Income
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </fieldset>
+
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Amount (₹)</mat-label>
+          <input
+            matInput
+            type="number"
+            min="1"
+            step="0.01"
+            formControlName="amount"
+          />
+          <mat-icon matPrefix>currency_rupee</mat-icon>
+          <mat-error>{{ errorFor('amount', 'Amount') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Date</mat-label>
+          <input matInput type="date" formControlName="date" />
+          <mat-error>{{ errorFor('date', 'Date') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category">
+            @for (category of categories(); track category) {
+              <mat-option [value]="category">
+                <mat-icon class="option-icon">{{ iconFor(category) }}</mat-icon>
+                {{ category }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-error>{{ errorFor('category', 'Category') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Payment method</mat-label>
+          <mat-select formControlName="paymentMethod">
+            @for (method of paymentMethods; track method.value) {
+              <mat-option [value]="method.value">
+                <mat-icon class="option-icon">{{ method.icon }}</mat-icon>
+                {{ method.label }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-row-full">
+          <mat-label>Notes (optional)</mat-label>
+          <input
+            matInput
+            formControlName="notes"
+            maxlength="160"
+            placeholder="e.g. Groceries at the weekend market"
+          />
+          <mat-hint align="end">
+            {{ form.controls.notes.value.length }}/160
+          </mat-hint>
+          <mat-error>{{ errorFor('notes', 'Notes') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Tags -->
+      <fieldset class="field-group">
+        <legend class="field-legend">Tags (optional)</legend>
+        <mat-chip-grid #chipGrid aria-label="Transaction tags">
+          @for (tag of tags(); track tag) {
+            <mat-chip-row (removed)="removeTag(tag)">
+              {{ tag }}
+              <button matChipRemove [attr.aria-label]="'Remove tag ' + tag">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          }
+          <input
+            placeholder="Add a tag and press Enter"
+            [matChipInputFor]="chipGrid"
+            (matChipInputTokenEnd)="addTag($event)"
+            [matChipInputAddOnBlur]="true"
+          />
+        </mat-chip-grid>
+        <p class="field-hint">Up to 8 tags. Useful for grouping across categories.</p>
+      </fieldset>
+
+      <!-- Recurring -->
+      <fieldset class="field-group">
+        <legend class="field-legend">Repeat</legend>
+        <mat-checkbox formControlName="isRecurring">
+          This transaction repeats
+        </mat-checkbox>
+        <p class="field-hint">
+          Recurring entries act as a template. FinTrack generates the missing
+          occurrences up to today, and never duplicates one that already exists.
+        </p>
+
+        @if (showRecurring()) {
+          <div class="form-grid mt-4">
+            <mat-form-field appearance="outline">
+              <mat-label>Frequency</mat-label>
+              <mat-select formControlName="frequency">
+                <mat-option value="weekly">Weekly</mat-option>
+                <mat-option value="monthly">Monthly</mat-option>
+                <mat-option value="yearly">Yearly</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Repeat until (optional)</mat-label>
+              <input matInput type="date" formControlName="recurringEndDate" />
+            </mat-form-field>
+          </div>
+        }
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn--ghost" (click)="cancel()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn--primary" [disabled]="busy()">
+          <mat-icon>{{ isEdit() ? 'save' : 'add' }}</mat-icon>
+          {{ busy() ? 'Saving…' : isEdit() ? 'Save changes' : 'Add transaction' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

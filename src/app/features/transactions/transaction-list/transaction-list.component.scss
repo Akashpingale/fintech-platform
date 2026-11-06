@@ -1,0 +1,154 @@
+.totals-strip {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  padding: var(--sp-4) var(--sp-5);
+  margin-bottom: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.totals-strip__item {
+  display: flex;
+  flex-direction: column;
+
+  .label {
+    font-size: var(--fs-caption);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .value {
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+}
+
+.chip-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+  animation: fadeUp 0.25s var(--ease);
+}
+
+.sort-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  opacity: 0.7;
+}
+
+.col-check {
+  width: 48px;
+  padding-right: 0 !important;
+}
+
+.col-actions {
+  width: 96px;
+  text-align: right;
+}
+
+.cell-with-avatar span span {
+  display: block;
+}
+
+.method {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.recurring-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+  margin-left: 4px;
+  color: var(--primary);
+}
+
+.tag-list {
+  display: inline-flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.amount-cell {
+  font-weight: 700;
+}
+
+.row-actions {
+  display: flex;
+  gap: 2px;
+  justify-content: flex-end;
+}
+
+.icon-action {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--r-sm);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+}
+
+.icon-action--danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.fab {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .fab {
+    display: inline-flex;
+  }
+  .fab-label {
+    display: none;
+  }
+  .totals-strip {
+    gap: var(--sp-4);
+  }
+}

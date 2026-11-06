@@ -1,0 +1,200 @@
+<div class="page">
+  <app-page-header
+    title="SIP tracker"
+    [subtitle]="
+      summary().active +
+      ' active plan' +
+      (summary().active === 1 ? '' : 's') +
+      (sips.dueSoon().length > 0
+        ? ' · ' + sips.dueSoon().length + ' due within a week'
+        : '')
+    "
+  >
+    <div slot="actions" class="row-wrap">
+      <a class="btn btn--ghost" routerLink="/calculators/sip">
+        <mat-icon>calculate</mat-icon>
+        SIP calculator
+      </a>
+      <button type="button" class="btn btn--primary" (click)="create()">
+        <mat-icon>add</mat-icon>
+        New SIP
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="grid grid--stats">
+    <app-stat-card
+      label="Monthly commitment"
+      icon="event_repeat"
+      tone="primary"
+      [value]="summary().monthly"
+      [hint]="'Across ' + summary().active + ' active plans'"
+    />
+    <app-stat-card
+      label="Invested so far"
+      icon="savings"
+      tone="primary"
+      [value]="summary().invested"
+      hint="Instalments paid to date"
+    />
+    <app-stat-card
+      label="Estimated value"
+      icon="trending_up"
+      [tone]="gain() >= 0 ? 'success' : 'danger'"
+      [value]="summary().value"
+      [hint]="
+        'Expected gain ' + (gain() >= 0 ? '+' : '') + (gain() | number: '1.0-0')
+      "
+    />
+    <app-stat-card
+      label="Projected at maturity"
+      icon="flag"
+      tone="warning"
+      [value]="summary().maturity"
+      hint="If every plan runs its full term"
+    />
+  </div>
+
+  @if (sips.dueSoon().length > 0) {
+    <div class="due-banner" role="status">
+      <mat-icon>notifications_active</mat-icon>
+      <div>
+        <strong>Upcoming debits</strong>
+        <span>
+          @for (row of sips.dueSoon(); track row.sip.id) {
+            {{ row.sip.fundName }} ({{ row.sip.amount | money }}) —
+            {{ dueLabel(row) }}.
+          }
+        </span>
+      </div>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="card mt-5"><app-skeleton [rows]="5" height="44px" /></div>
+  } @else if (progress().length === 0) {
+    <div class="card mt-5">
+      <app-empty-state
+        icon="autorenew"
+        title="No SIPs tracked yet"
+        message="Add a plan with its monthly amount, duration and expected return to follow the instalments and the projected maturity value."
+        actionLabel="Create your first SIP"
+        (action)="create()"
+      />
+    </div>
+  } @else {
+    <div class="grid grid--cards mt-5">
+      @for (row of progress(); track row.sip.id) {
+        <article
+          class="card sip-card"
+          [class.sip-card--selected]="isSelected(row)"
+          [class.sip-card--done]="row.isComplete"
+        >
+          <header class="sip-card__head">
+            <div class="sip-card__title">
+              <h2 class="cell-title sip-card__name">{{ row.sip.fundName }}</h2>
+              <span class="cell-sub">
+                {{ row.sip.amount | money }} on day {{ row.sip.dayOfMonth }} ·
+                {{ row.sip.expectedReturn }}% expected
+              </span>
+            </div>
+            <div class="sip-card__actions">
+              <button
+                type="button"
+                class="icon-action"
+                (click)="edit(row)"
+                matTooltip="Edit plan"
+                [attr.aria-label]="'Edit ' + row.sip.fundName"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="icon-action icon-action--danger"
+                (click)="remove(row)"
+                matTooltip="Stop plan"
+                [attr.aria-label]="'Stop ' + row.sip.fundName"
+              >
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          </header>
+
+          <div class="sip-card__progress">
+            <div class="flex-between">
+              <span class="cell-sub">
+                {{ row.instalmentsPaid }} of {{ row.sip.durationMonths }}
+                instalments
+              </span>
+              <span class="num cell-sub">
+                {{ completionPercent(row) | number: '1.0-0' }}%
+              </span>
+            </div>
+            <div class="progress">
+              <div
+                class="progress__bar"
+                [style.width.%]="completionPercent(row)"
+              ></div>
+            </div>
+          </div>
+
+          <div class="sip-card__figures">
+            <div class="kv">
+              <span class="kv__key">Invested</span>
+              <span class="kv__value">{{ row.invested | money }}</span>
+            </div>
+            <div class="kv">
+              <span class="kv__key">Value now</span>
+              <span class="kv__value gain">{{ row.currentValue | money }}</span>
+            </div>
+            <div class="kv">
+              <span class="kv__key">At maturity</span>
+              <span class="kv__value">{{ row.maturityValue | money }}</span>
+            </div>
+          </div>
+
+          <footer class="sip-card__foot">
+            <span
+              class="badge"
+              [class.badge--gain]="row.isComplete"
+              [class.badge--warn]="!row.isComplete && row.daysUntilDue <= 7"
+              [class.badge--info]="!row.isComplete && row.daysUntilDue > 7"
+            >
+              <mat-icon class="badge-icon">
+                {{ row.isComplete ? 'check_circle' : 'event' }}
+              </mat-icon>
+              {{ dueLabel(row) }}
+            </span>
+
+            <button
+              type="button"
+              class="btn btn--ghost btn--compact"
+              (click)="select(row)"
+              [disabled]="isSelected(row)"
+            >
+              <mat-icon>bar_chart</mat-icon>
+              {{ isSelected(row) ? 'Charted' : 'Chart this' }}
+            </button>
+          </footer>
+        </article>
+      }
+    </div>
+
+    @if (selected()) {
+      <div class="mt-5">
+        <app-chart-card
+          [title]="'Projection · ' + selected()!.sip.fundName"
+          [subtitle]="
+            'Invested amount against expected value at ' +
+            selected()!.sip.expectedReturn +
+            '% a year'
+          "
+          type="bar"
+          [data]="projectionData()"
+          [options]="projectionOptions()"
+          [height]="320"
+        />
+      </div>
+    }
+  }
+</div>

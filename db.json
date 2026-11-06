@@ -1,0 +1,1549 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Akash Pingale",
+      "email": "akash@fintrack.in",
+      "password": "Demo@1234",
+      "currency": "INR",
+      "monthlyIncome": 95000,
+      "riskProfile": "moderate",
+      "avatar": ""
+    },
+    {
+      "name": "Suraj",
+      "email": "suraj.pingale24@gmail.com",
+      "password": "Suraj@2005",
+      "currency": "INR",
+      "monthlyIncome": 50000,
+      "riskProfile": "moderate",
+      "avatar": "",
+      "id": "1RDVg3UW-J4"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "t1",
+      "userId": "u1",
+      "type": "income",
+      "amount": 95000,
+      "category": "Salary",
+      "date": "2026-05-31",
+      "paymentMethod": "bank",
+      "notes": "Monthly salary credit",
+      "tags": [
+        "salary"
+      ],
+      "recurring": {
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "t2",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 22000,
+      "category": "Rent",
+      "date": "2026-06-02",
+      "paymentMethod": "bank",
+      "notes": "Flat rent",
+      "tags": [
+        "fixed"
+      ],
+      "recurring": {
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "t3",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 3200,
+      "category": "Bills",
+      "date": "2026-06-06",
+      "paymentMethod": "upi",
+      "notes": "Electricity & water",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t4",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 799,
+      "category": "Bills",
+      "date": "2026-06-11",
+      "paymentMethod": "card",
+      "notes": "Broadband",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t5",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2400,
+      "category": "Transport",
+      "date": "2026-06-04",
+      "paymentMethod": "upi",
+      "notes": "Metro pass",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t6",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1850,
+      "category": "Health",
+      "date": "2026-06-14",
+      "paymentMethod": "card",
+      "notes": "Gym membership",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t7",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 3125,
+      "category": "Education",
+      "date": "2026-06-06",
+      "paymentMethod": "card",
+      "notes": "Online course"
+    },
+    {
+      "id": "t8",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 704,
+      "category": "Food",
+      "date": "2026-06-16",
+      "paymentMethod": "upi",
+      "notes": "Vegetables"
+    },
+    {
+      "id": "t9",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1851,
+      "category": "Health",
+      "date": "2026-06-09",
+      "paymentMethod": "card",
+      "notes": "Doctor visit"
+    },
+    {
+      "id": "t10",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2663,
+      "category": "Shopping",
+      "date": "2026-06-22",
+      "paymentMethod": "card",
+      "notes": "Electronics"
+    },
+    {
+      "id": "t11",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1249,
+      "category": "Education",
+      "date": "2026-06-11",
+      "paymentMethod": "card",
+      "notes": "Certification fee"
+    },
+    {
+      "id": "t12",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 702,
+      "category": "Health",
+      "date": "2026-06-15",
+      "paymentMethod": "upi",
+      "notes": "Doctor visit"
+    },
+    {
+      "id": "t13",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 874,
+      "category": "Transport",
+      "date": "2026-06-23",
+      "paymentMethod": "upi",
+      "notes": "Cab ride"
+    },
+    {
+      "id": "t14",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 384,
+      "category": "Transport",
+      "date": "2026-06-23",
+      "paymentMethod": "upi",
+      "notes": "Fuel"
+    },
+    {
+      "id": "t15",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1268,
+      "category": "Education",
+      "date": "2026-06-22",
+      "paymentMethod": "card",
+      "notes": "Certification fee"
+    },
+    {
+      "id": "t16",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 666,
+      "category": "Food",
+      "date": "2026-06-25",
+      "paymentMethod": "upi",
+      "notes": "Office lunch"
+    },
+    {
+      "id": "t17",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1398,
+      "category": "Entertainment",
+      "date": "2026-06-22",
+      "paymentMethod": "card",
+      "notes": "Books"
+    },
+    {
+      "id": "t18",
+      "userId": "u1",
+      "type": "income",
+      "amount": 95000,
+      "category": "Salary",
+      "date": "2026-06-30",
+      "paymentMethod": "bank",
+      "notes": "Monthly salary credit",
+      "tags": [
+        "salary"
+      ]
+    },
+    {
+      "id": "t19",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 22000,
+      "category": "Rent",
+      "date": "2026-07-02",
+      "paymentMethod": "bank",
+      "notes": "Flat rent",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t20",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 3200,
+      "category": "Bills",
+      "date": "2026-07-06",
+      "paymentMethod": "upi",
+      "notes": "Electricity & water",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t21",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 799,
+      "category": "Bills",
+      "date": "2026-07-11",
+      "paymentMethod": "card",
+      "notes": "Broadband",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t22",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2400,
+      "category": "Transport",
+      "date": "2026-07-04",
+      "paymentMethod": "upi",
+      "notes": "Metro pass",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t23",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1850,
+      "category": "Health",
+      "date": "2026-07-14",
+      "paymentMethod": "card",
+      "notes": "Gym membership",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t24",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1344,
+      "category": "Health",
+      "date": "2026-07-26",
+      "paymentMethod": "card",
+      "notes": "Lab test"
+    },
+    {
+      "id": "t25",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1150,
+      "category": "Food",
+      "date": "2026-07-19",
+      "paymentMethod": "card",
+      "notes": "Groceries"
+    },
+    {
+      "id": "t26",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 804,
+      "category": "Transport",
+      "date": "2026-07-05",
+      "paymentMethod": "cash",
+      "notes": "Fuel"
+    },
+    {
+      "id": "t27",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 524,
+      "category": "Food",
+      "date": "2026-07-16",
+      "paymentMethod": "cash",
+      "notes": "Vegetables"
+    },
+    {
+      "id": "t28",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1126,
+      "category": "Health",
+      "date": "2026-07-09",
+      "paymentMethod": "card",
+      "notes": "Doctor visit"
+    },
+    {
+      "id": "t29",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 718,
+      "category": "Entertainment",
+      "date": "2026-07-10",
+      "paymentMethod": "upi",
+      "notes": "Movie tickets"
+    },
+    {
+      "id": "t30",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 192,
+      "category": "Food",
+      "date": "2026-07-19",
+      "paymentMethod": "upi",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t31",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 823,
+      "category": "Health",
+      "date": "2026-07-01",
+      "paymentMethod": "upi",
+      "notes": "Pharmacy"
+    },
+    {
+      "id": "t32",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 268,
+      "category": "Food",
+      "date": "2026-07-12",
+      "paymentMethod": "cash",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t33",
+      "userId": "u1",
+      "type": "income",
+      "amount": 95000,
+      "category": "Salary",
+      "date": "2026-07-31",
+      "paymentMethod": "bank",
+      "notes": "Monthly salary credit",
+      "tags": [
+        "salary"
+      ]
+    },
+    {
+      "id": "t34",
+      "userId": "u1",
+      "type": "income",
+      "amount": 13207,
+      "category": "Freelance",
+      "date": "2026-08-16",
+      "paymentMethod": "bank",
+      "notes": "Website project",
+      "tags": [
+        "side-income"
+      ]
+    },
+    {
+      "id": "t35",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 22000,
+      "category": "Rent",
+      "date": "2026-08-02",
+      "paymentMethod": "bank",
+      "notes": "Flat rent",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t36",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 3200,
+      "category": "Bills",
+      "date": "2026-08-06",
+      "paymentMethod": "upi",
+      "notes": "Electricity & water",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t37",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 799,
+      "category": "Bills",
+      "date": "2026-08-11",
+      "paymentMethod": "card",
+      "notes": "Broadband",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t38",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2400,
+      "category": "Transport",
+      "date": "2026-08-04",
+      "paymentMethod": "upi",
+      "notes": "Metro pass",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t39",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1850,
+      "category": "Health",
+      "date": "2026-08-14",
+      "paymentMethod": "card",
+      "notes": "Gym membership",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t40",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 518,
+      "category": "Entertainment",
+      "date": "2026-08-06",
+      "paymentMethod": "upi",
+      "notes": "Movie tickets"
+    },
+    {
+      "id": "t41",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 922,
+      "category": "Entertainment",
+      "date": "2026-08-27",
+      "paymentMethod": "upi",
+      "notes": "Books"
+    },
+    {
+      "id": "t42",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 318,
+      "category": "Food",
+      "date": "2026-08-01",
+      "paymentMethod": "cash",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t43",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 385,
+      "category": "Food",
+      "date": "2026-08-05",
+      "paymentMethod": "upi",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t44",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 405,
+      "category": "Transport",
+      "date": "2026-08-26",
+      "paymentMethod": "cash",
+      "notes": "Cab ride"
+    },
+    {
+      "id": "t45",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 194,
+      "category": "Food",
+      "date": "2026-08-13",
+      "paymentMethod": "upi",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t46",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 635,
+      "category": "Transport",
+      "date": "2026-08-15",
+      "paymentMethod": "cash",
+      "notes": "Cab ride"
+    },
+    {
+      "id": "t47",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 415,
+      "category": "Transport",
+      "date": "2026-08-14",
+      "paymentMethod": "upi",
+      "notes": "Fuel"
+    },
+    {
+      "id": "t48",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1426,
+      "category": "Entertainment",
+      "date": "2026-08-24",
+      "paymentMethod": "upi",
+      "notes": "Books"
+    },
+    {
+      "id": "t49",
+      "userId": "u1",
+      "type": "income",
+      "amount": 95000,
+      "category": "Salary",
+      "date": "2026-08-31",
+      "paymentMethod": "bank",
+      "notes": "Monthly salary credit",
+      "tags": [
+        "salary"
+      ]
+    },
+    {
+      "id": "t50",
+      "userId": "u1",
+      "type": "income",
+      "amount": 20411,
+      "category": "Freelance",
+      "date": "2026-09-12",
+      "paymentMethod": "bank",
+      "notes": "Consulting retainer",
+      "tags": [
+        "side-income"
+      ]
+    },
+    {
+      "id": "t51",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 22000,
+      "category": "Rent",
+      "date": "2026-09-02",
+      "paymentMethod": "bank",
+      "notes": "Flat rent",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t52",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 3200,
+      "category": "Bills",
+      "date": "2026-09-06",
+      "paymentMethod": "upi",
+      "notes": "Electricity & water",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t53",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 799,
+      "category": "Bills",
+      "date": "2026-09-11",
+      "paymentMethod": "card",
+      "notes": "Broadband",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t54",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2400,
+      "category": "Transport",
+      "date": "2026-09-04",
+      "paymentMethod": "upi",
+      "notes": "Metro pass",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t55",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1850,
+      "category": "Health",
+      "date": "2026-09-14",
+      "paymentMethod": "card",
+      "notes": "Gym membership",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t56",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 389,
+      "category": "Food",
+      "date": "2026-09-10",
+      "paymentMethod": "upi",
+      "notes": "Office lunch"
+    },
+    {
+      "id": "t57",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 182,
+      "category": "Food",
+      "date": "2026-09-19",
+      "paymentMethod": "upi",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t58",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 847,
+      "category": "Food",
+      "date": "2026-09-16",
+      "paymentMethod": "card",
+      "notes": "Cafe"
+    },
+    {
+      "id": "t59",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 633,
+      "category": "Food",
+      "date": "2026-09-23",
+      "paymentMethod": "upi",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t60",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1397,
+      "category": "Health",
+      "date": "2026-09-22",
+      "paymentMethod": "upi",
+      "notes": "Pharmacy"
+    },
+    {
+      "id": "t61",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1016,
+      "category": "Entertainment",
+      "date": "2026-09-07",
+      "paymentMethod": "card",
+      "notes": "Concert"
+    },
+    {
+      "id": "t62",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1104,
+      "category": "Food",
+      "date": "2026-09-11",
+      "paymentMethod": "card",
+      "notes": "Swiggy order"
+    },
+    {
+      "id": "t63",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 990,
+      "category": "Health",
+      "date": "2026-09-17",
+      "paymentMethod": "upi",
+      "notes": "Lab test"
+    },
+    {
+      "id": "t64",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 910,
+      "category": "Entertainment",
+      "date": "2026-09-02",
+      "paymentMethod": "upi",
+      "notes": "Books"
+    },
+    {
+      "id": "t65",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 452,
+      "category": "Food",
+      "date": "2026-09-10",
+      "paymentMethod": "cash",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t66",
+      "userId": "u1",
+      "type": "income",
+      "amount": 95000,
+      "category": "Salary",
+      "date": "2026-09-30",
+      "paymentMethod": "bank",
+      "notes": "Monthly salary credit",
+      "tags": [
+        "salary"
+      ]
+    },
+    {
+      "id": "t67",
+      "userId": "u1",
+      "type": "income",
+      "amount": 20198,
+      "category": "Freelance",
+      "date": "2026-10-22",
+      "paymentMethod": "bank",
+      "notes": "App build",
+      "tags": [
+        "side-income"
+      ]
+    },
+    {
+      "id": "t68",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 22000,
+      "category": "Rent",
+      "date": "2026-10-02",
+      "paymentMethod": "bank",
+      "notes": "Flat rent",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t69",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 3200,
+      "category": "Bills",
+      "date": "2026-10-06",
+      "paymentMethod": "upi",
+      "notes": "Electricity & water",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t70",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 799,
+      "category": "Bills",
+      "date": "2026-10-11",
+      "paymentMethod": "card",
+      "notes": "Broadband",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t71",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2400,
+      "category": "Transport",
+      "date": "2026-10-04",
+      "paymentMethod": "upi",
+      "notes": "Metro pass",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t72",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1850,
+      "category": "Health",
+      "date": "2026-10-14",
+      "paymentMethod": "card",
+      "notes": "Gym membership",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t73",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2539,
+      "category": "Shopping",
+      "date": "2026-10-15",
+      "paymentMethod": "upi",
+      "notes": "Footwear"
+    },
+    {
+      "id": "t74",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2184,
+      "category": "Shopping",
+      "date": "2026-10-19",
+      "paymentMethod": "upi",
+      "notes": "Clothes"
+    },
+    {
+      "id": "t75",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1539,
+      "category": "Health",
+      "date": "2026-10-13",
+      "paymentMethod": "card",
+      "notes": "Doctor visit"
+    },
+    {
+      "id": "t76",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 597,
+      "category": "Food",
+      "date": "2026-10-20",
+      "paymentMethod": "cash",
+      "notes": "Cafe"
+    },
+    {
+      "id": "t77",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 624,
+      "category": "Transport",
+      "date": "2026-10-21",
+      "paymentMethod": "upi",
+      "notes": "Auto"
+    },
+    {
+      "id": "t78",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 617,
+      "category": "Education",
+      "date": "2026-10-16",
+      "paymentMethod": "card",
+      "notes": "Certification fee"
+    },
+    {
+      "id": "t79",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 269,
+      "category": "Food",
+      "date": "2026-10-23",
+      "paymentMethod": "cash",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t80",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 756,
+      "category": "Health",
+      "date": "2026-10-17",
+      "paymentMethod": "card",
+      "notes": "Pharmacy"
+    },
+    {
+      "id": "t81",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 808,
+      "category": "Food",
+      "date": "2026-10-19",
+      "paymentMethod": "upi",
+      "notes": "Cafe"
+    },
+    {
+      "id": "t82",
+      "userId": "u1",
+      "type": "income",
+      "amount": 95000,
+      "category": "Salary",
+      "date": "2026-10-31",
+      "paymentMethod": "bank",
+      "notes": "Monthly salary credit",
+      "tags": [
+        "salary"
+      ]
+    },
+    {
+      "id": "t83",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 22000,
+      "category": "Rent",
+      "date": "2026-11-02",
+      "paymentMethod": "bank",
+      "notes": "Flat rent",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t84",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 3200,
+      "category": "Bills",
+      "date": "2026-11-06",
+      "paymentMethod": "upi",
+      "notes": "Electricity & water",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t85",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 799,
+      "category": "Bills",
+      "date": "2026-11-06",
+      "paymentMethod": "card",
+      "notes": "Broadband",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t86",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2400,
+      "category": "Transport",
+      "date": "2026-11-04",
+      "paymentMethod": "upi",
+      "notes": "Metro pass",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t87",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 1850,
+      "category": "Health",
+      "date": "2026-11-06",
+      "paymentMethod": "card",
+      "notes": "Gym membership",
+      "tags": [
+        "fixed"
+      ]
+    },
+    {
+      "id": "t88",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 998,
+      "category": "Entertainment",
+      "date": "2026-11-04",
+      "paymentMethod": "card",
+      "notes": "Books"
+    },
+    {
+      "id": "t89",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 409,
+      "category": "Food",
+      "date": "2026-11-06",
+      "paymentMethod": "upi",
+      "notes": "Tea & snacks"
+    },
+    {
+      "id": "t90",
+      "userId": "u1",
+      "type": "expense",
+      "amount": 2464,
+      "category": "Shopping",
+      "date": "2026-11-06",
+      "paymentMethod": "upi",
+      "notes": "Clothes"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "b1",
+      "userId": "u1",
+      "category": "Food",
+      "month": "2026-10",
+      "limit": 12000
+    },
+    {
+      "id": "b2",
+      "userId": "u1",
+      "category": "Rent",
+      "month": "2026-10",
+      "limit": 22000
+    },
+    {
+      "id": "b3",
+      "userId": "u1",
+      "category": "Transport",
+      "month": "2026-10",
+      "limit": 4500
+    },
+    {
+      "id": "b4",
+      "userId": "u1",
+      "category": "Shopping",
+      "month": "2026-10",
+      "limit": 6000
+    },
+    {
+      "id": "b5",
+      "userId": "u1",
+      "category": "Bills",
+      "month": "2026-10",
+      "limit": 4500
+    },
+    {
+      "id": "b6",
+      "userId": "u1",
+      "category": "Health",
+      "month": "2026-10",
+      "limit": 4000
+    },
+    {
+      "id": "b7",
+      "userId": "u1",
+      "category": "Education",
+      "month": "2026-10",
+      "limit": 4000
+    },
+    {
+      "id": "b8",
+      "userId": "u1",
+      "category": "Entertainment",
+      "month": "2026-10",
+      "limit": 3000
+    },
+    {
+      "id": "b9",
+      "userId": "u1",
+      "category": "Food",
+      "month": "2026-11",
+      "limit": 12000
+    },
+    {
+      "id": "b10",
+      "userId": "u1",
+      "category": "Rent",
+      "month": "2026-11",
+      "limit": 22000
+    },
+    {
+      "id": "b11",
+      "userId": "u1",
+      "category": "Transport",
+      "month": "2026-11",
+      "limit": 4500
+    },
+    {
+      "id": "b12",
+      "userId": "u1",
+      "category": "Shopping",
+      "month": "2026-11",
+      "limit": 6000
+    },
+    {
+      "id": "b13",
+      "userId": "u1",
+      "category": "Bills",
+      "month": "2026-11",
+      "limit": 4500
+    },
+    {
+      "id": "b14",
+      "userId": "u1",
+      "category": "Health",
+      "month": "2026-11",
+      "limit": 4000
+    },
+    {
+      "id": "b15",
+      "userId": "u1",
+      "category": "Education",
+      "month": "2026-11",
+      "limit": 4000
+    },
+    {
+      "id": "b16",
+      "userId": "u1",
+      "category": "Entertainment",
+      "month": "2026-11",
+      "limit": 3000
+    }
+  ],
+  "goals": [
+    {
+      "id": "g1",
+      "userId": "u1",
+      "name": "Emergency Fund",
+      "targetAmount": 300000,
+      "savedAmount": 186000,
+      "deadline": "2027-11-05",
+      "createdAt": "2025-08-31"
+    },
+    {
+      "id": "g2",
+      "userId": "u1",
+      "name": "Europe Trip",
+      "targetAmount": 250000,
+      "savedAmount": 72500,
+      "deadline": "2028-04-14",
+      "createdAt": "2026-03-31"
+    },
+    {
+      "id": "g3",
+      "userId": "u1",
+      "name": "New Laptop",
+      "targetAmount": 145000,
+      "savedAmount": 145000,
+      "deadline": "2026-12-19",
+      "createdAt": "2026-01-31"
+    },
+    {
+      "id": "g4",
+      "userId": "u1",
+      "name": "Home Down Payment",
+      "targetAmount": 1500000,
+      "savedAmount": 215000,
+      "deadline": "2030-11-05",
+      "createdAt": "2025-11-30"
+    }
+  ],
+  "holdings": [
+    {
+      "id": "h1",
+      "userId": "u1",
+      "assetType": "stock",
+      "symbol": "RELIANCE",
+      "name": "Reliance Industries",
+      "quantity": 14,
+      "avgBuyPrice": 2450,
+      "currentPrice": 2918.4,
+      "buyDate": "2024-05-31"
+    },
+    {
+      "id": "h2",
+      "userId": "u1",
+      "assetType": "stock",
+      "symbol": "INFY",
+      "name": "Infosys",
+      "quantity": 25,
+      "avgBuyPrice": 1480,
+      "currentPrice": 1622.75,
+      "buyDate": "2025-02-28"
+    },
+    {
+      "id": "h3",
+      "userId": "u1",
+      "assetType": "mutual_fund",
+      "symbol": "PPFAS",
+      "name": "Parag Parikh Flexi Cap Fund",
+      "quantity": 420.55,
+      "avgBuyPrice": 62.4,
+      "currentPrice": 78.9,
+      "buyDate": "2024-10-31"
+    },
+    {
+      "id": "h4",
+      "userId": "u1",
+      "assetType": "crypto",
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "quantity": 0.045,
+      "avgBuyPrice": 4250000,
+      "currentPrice": 5380000,
+      "buyDate": "2025-07-31"
+    },
+    {
+      "id": "h5",
+      "userId": "u1",
+      "assetType": "gold",
+      "symbol": "SGBGOLD",
+      "name": "Sovereign Gold Bond",
+      "quantity": 18,
+      "avgBuyPrice": 5820,
+      "currentPrice": 7140,
+      "buyDate": "2025-04-30"
+    },
+    {
+      "id": "h6",
+      "userId": "u1",
+      "assetType": "fd",
+      "symbol": "HDFCFD",
+      "name": "HDFC Bank Fixed Deposit",
+      "quantity": 1,
+      "avgBuyPrice": 200000,
+      "currentPrice": 215600,
+      "buyDate": "2025-09-30"
+    },
+    {
+      "id": "h7",
+      "userId": "u1",
+      "assetType": "bond",
+      "symbol": "NHAIBOND",
+      "name": "NHAI Tax-Free Bond",
+      "quantity": 60,
+      "avgBuyPrice": 1045,
+      "currentPrice": 1082.5,
+      "buyDate": "2025-12-31"
+    }
+  ],
+  "assetTransactions": [
+    {
+      "id": "at1",
+      "holdingId": "h1",
+      "side": "buy",
+      "quantity": 14,
+      "price": 2450,
+      "fees": 41,
+      "date": "2024-05-31"
+    },
+    {
+      "id": "at2",
+      "holdingId": "h2",
+      "side": "buy",
+      "quantity": 25,
+      "price": 1480,
+      "fees": 44,
+      "date": "2025-02-28"
+    },
+    {
+      "id": "at3",
+      "holdingId": "h3",
+      "side": "buy",
+      "quantity": 420.55,
+      "price": 62.4,
+      "fees": 31,
+      "date": "2024-10-31"
+    },
+    {
+      "id": "at4",
+      "holdingId": "h4",
+      "side": "buy",
+      "quantity": 0.045,
+      "price": 4250000,
+      "fees": 229,
+      "date": "2025-07-31"
+    },
+    {
+      "id": "at5",
+      "holdingId": "h5",
+      "side": "buy",
+      "quantity": 18,
+      "price": 5820,
+      "fees": 126,
+      "date": "2025-04-30"
+    },
+    {
+      "id": "at6",
+      "holdingId": "h6",
+      "side": "buy",
+      "quantity": 1,
+      "price": 200000,
+      "fees": 240,
+      "date": "2025-09-30"
+    },
+    {
+      "id": "at7",
+      "holdingId": "h7",
+      "side": "buy",
+      "quantity": 60,
+      "price": 1045,
+      "fees": 75,
+      "date": "2025-12-31"
+    },
+    {
+      "id": "at8",
+      "holdingId": "h1",
+      "side": "buy",
+      "quantity": 4,
+      "price": 2710,
+      "fees": 14,
+      "date": "2026-02-28"
+    },
+    {
+      "id": "at9",
+      "holdingId": "h3",
+      "side": "buy",
+      "quantity": 80.55,
+      "price": 71.2,
+      "fees": 7,
+      "date": "2026-06-30"
+    },
+    {
+      "id": "at10",
+      "holdingId": "h2",
+      "side": "sell",
+      "quantity": 5,
+      "price": 1595,
+      "fees": 12,
+      "date": "2026-07-31"
+    }
+  ],
+  "sips": [
+    {
+      "id": "s1",
+      "userId": "u1",
+      "fundName": "Parag Parikh Flexi Cap Fund",
+      "amount": 10000,
+      "dayOfMonth": 5,
+      "startDate": "2024-12-31",
+      "durationMonths": 60,
+      "expectedReturn": 13.5
+    },
+    {
+      "id": "s2",
+      "userId": "u1",
+      "fundName": "UTI Nifty 50 Index Fund",
+      "amount": 6000,
+      "dayOfMonth": 12,
+      "startDate": "2025-11-30",
+      "durationMonths": 120,
+      "expectedReturn": 11.5
+    },
+    {
+      "id": "s3",
+      "userId": "u1",
+      "fundName": "ICICI Pru Balanced Advantage",
+      "amount": 4000,
+      "dayOfMonth": 20,
+      "startDate": "2026-05-31",
+      "durationMonths": 36,
+      "expectedReturn": 10
+    }
+  ],
+  "watchlist": [
+    {
+      "id": "w1",
+      "userId": "u1",
+      "symbol": "TCS",
+      "alertAbove": 4200,
+      "alertBelow": 3600
+    },
+    {
+      "id": "w2",
+      "userId": "u1",
+      "symbol": "HDFCBANK",
+      "alertAbove": 1850
+    },
+    {
+      "id": "w3",
+      "userId": "u1",
+      "symbol": "ETH",
+      "alertBelow": 180000
+    },
+    {
+      "id": "w4",
+      "userId": "u1",
+      "symbol": "TATAMOTORS",
+      "alertAbove": 1100,
+      "alertBelow": 820
+    }
+  ],
+  "notifications": [
+    {
+      "id": "n1",
+      "userId": "u1",
+      "type": "goal",
+      "message": "Goal reached: New Laptop is fully funded.",
+      "read": false,
+      "createdAt": "2026-11-04T09:32:22.197Z"
+    },
+    {
+      "id": "n2",
+      "userId": "u1",
+      "type": "sip",
+      "message": "Your UTI Nifty 50 Index Fund SIP was debited successfully.",
+      "read": true,
+      "createdAt": "2026-10-28T09:32:22.197Z"
+    }
+  ],
+  "marketPrices": [
+    {
+      "symbol": "RELIANCE",
+      "price": 2918.4,
+      "change": -11.38,
+      "changePercent": -0.39,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "LHLAKg9m9_8"
+    },
+    {
+      "symbol": "INFY",
+      "price": 1622.75,
+      "change": 4.54,
+      "changePercent": 0.28,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "91YyaSkLbWc"
+    },
+    {
+      "symbol": "PPFAS",
+      "price": 78.9,
+      "change": -0.42,
+      "changePercent": -0.53,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "MrlFJUwX77A"
+    },
+    {
+      "symbol": "BTC",
+      "price": 5380000,
+      "change": 87694,
+      "changePercent": 1.63,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "-ZnVGfvdLdI"
+    },
+    {
+      "symbol": "SGBGOLD",
+      "price": 7140,
+      "change": -56.41,
+      "changePercent": -0.79,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "OPEeOpFWGT4"
+    },
+    {
+      "symbol": "HDFCFD",
+      "price": 215600,
+      "change": -2005.08,
+      "changePercent": -0.93,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "cWjDREM-RJ0"
+    },
+    {
+      "symbol": "NHAIBOND",
+      "price": 1082.5,
+      "change": -9.09,
+      "changePercent": -0.84,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "loSGP0BrIFc"
+    },
+    {
+      "symbol": "TCS",
+      "price": 4064.3,
+      "change": 22.76,
+      "changePercent": 0.56,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "mmO-TrD_yKE"
+    },
+    {
+      "symbol": "HDFCBANK",
+      "price": 1742.6,
+      "change": -18.47,
+      "changePercent": -1.06,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "1rejZmVOT6M"
+    },
+    {
+      "symbol": "ETH",
+      "price": 214500,
+      "change": 943.8,
+      "changePercent": 0.44,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "B57ghmejsWg"
+    },
+    {
+      "symbol": "TATAMOTORS",
+      "price": 962.45,
+      "change": 15.4,
+      "changePercent": 1.6,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "BN4UcSfREP8"
+    },
+    {
+      "symbol": "SOL",
+      "price": 15800,
+      "change": -142.2,
+      "changePercent": -0.9,
+      "updatedAt": "2026-11-06T09:32:22.200Z",
+      "id": "QU1Hr159d24"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

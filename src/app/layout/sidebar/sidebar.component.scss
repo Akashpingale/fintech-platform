@@ -1,0 +1,175 @@
+// Sidebar styles — Section 16.6
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: var(--sp-5) var(--sp-3);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  overflow: hidden;
+  transition: width var(--t-base) var(--ease), padding var(--t-base) var(--ease);
+  z-index: 100;
+}
+
+.sidebar__logo {
+  font: 800 1.25rem 'Plus Jakarta Sans', sans-serif;
+  color: var(--primary);
+  margin-bottom: var(--sp-4);
+  padding: 0 var(--sp-2);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.logo-text {
+  display: inline-block;
+  animation: fadeUp 0.3s var(--ease);
+}
+
+.logo-icon {
+  font-size: 1rem;
+}
+
+.collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-bottom: var(--sp-3);
+  transition: background var(--t-fast), color var(--t-fast);
+  align-self: flex-end;
+
+  &:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 11px 14px;
+  border-radius: var(--r-md);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: var(--fs-body);
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  &.active {
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 600;
+  }
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.flex-spacer { flex: 1; }
+
+.nav-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+// Mobile: becomes bottom navigation
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    left: 0;
+    right: 0;
+    height: 64px;
+    width: 100% !important;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    z-index: 200;
+  }
+
+  .sidebar__logo,
+  .collapse-btn,
+  .nav-bottom,
+  .flex-spacer {
+    display: none;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    gap: 0;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    padding: 8px 4px;
+    gap: 2px;
+    font-size: 0.6875rem;
+    border-radius: var(--r-sm);
+
+    span {
+      display: block;
+      font-size: 0.625rem;
+    }
+  }
+}
+
+.desktop-only {
+  @media (max-width: 768px) { display: none; }
+}
+
+// Mobile bottom bar scrolls horizontally so every destination stays reachable
+// instead of being squeezed below a tappable size.
+@media (max-width: 768px) {
+  .sidebar {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+
+  .nav-list {
+    justify-content: flex-start;
+    padding: 0 var(--sp-2);
+  }
+
+  .nav-item {
+    min-width: 72px;
+    flex: 0 0 auto;
+  }
+}

@@ -1,0 +1,149 @@
+<div class="page">
+  <app-page-header
+    title="Watchlist"
+    [subtitle]="
+      rows().length +
+      ' symbol' +
+      (rows().length === 1 ? '' : 's') +
+      (triggered().length > 0
+        ? ' · ' + triggered().length + ' alert triggered'
+        : '')
+    "
+  >
+    <a slot="actions" class="btn btn--ghost" routerLink="/portfolio">
+      <mat-icon>trending_up</mat-icon>
+      Portfolio
+    </a>
+  </app-page-header>
+
+  <!-- Add a symbol -->
+  <form class="card add-form" [formGroup]="addForm" (ngSubmit)="add()">
+    <mat-form-field appearance="outline" class="add-form__symbol">
+      <mat-label>Symbol</mat-label>
+      <input
+        matInput
+        formControlName="symbol"
+        placeholder="TCS"
+        style="text-transform: uppercase"
+      />
+      <mat-icon matPrefix>add_chart</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Alert above (₹)</mat-label>
+      <input matInput type="number" min="0" formControlName="alertAbove" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Alert below (₹)</mat-label>
+      <input matInput type="number" min="0" formControlName="alertBelow" />
+    </mat-form-field>
+
+    <button type="submit" class="btn btn--primary">
+      <mat-icon>add</mat-icon>
+      Add to watchlist
+    </button>
+  </form>
+
+  @if (triggered().length > 0) {
+    <div class="trigger-banner" role="status">
+      <mat-icon>notifications_active</mat-icon>
+      <span>
+        {{ triggered().length }}
+        {{ triggered().length === 1 ? 'alert has' : 'alerts have' }}
+        been crossed:
+        {{ triggered()[0].item.symbol
+        }}{{ triggered().length > 1 ? ' and others' : '' }}.
+      </span>
+      <a routerLink="/notifications">View notifications</a>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="card mt-4"><app-skeleton [rows]="5" height="48px" /></div>
+  } @else if (rows().length === 0) {
+    <div class="card mt-4">
+      <app-empty-state
+        icon="visibility"
+        title="Your watchlist is empty"
+        message="Add a symbol above to follow its simulated live price and get alerted when it crosses a level you care about."
+      />
+    </div>
+  } @else {
+    <div class="watch-grid mt-4">
+      @for (row of rows(); track row.item.id) {
+        <article class="card watch-card" [class.watch-card--alert]="row.triggered">
+          <header class="watch-card__head">
+            <div>
+              <div class="watch-card__symbol">
+                {{ row.item.symbol }}
+                @if (holdingIdFor(row.item.symbol)) {
+                  <a
+                    class="held-chip"
+                    [routerLink]="['/portfolio', holdingIdFor(row.item.symbol)]"
+                    matTooltip="You hold this asset — open it"
+                  >
+                    <mat-icon>inventory_2</mat-icon>
+                    Held
+                  </a>
+                }
+              </div>
+              <div class="cell-sub">{{ alertSummary(row) }}</div>
+            </div>
+
+            <div class="watch-card__actions">
+              <button
+                type="button"
+                class="icon-action"
+                (click)="editAlerts(row)"
+                matTooltip="Edit alerts"
+                [attr.aria-label]="'Edit alerts for ' + row.item.symbol"
+              >
+                <mat-icon>notifications</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="icon-action icon-action--danger"
+                (click)="remove(row)"
+                matTooltip="Remove"
+                [attr.aria-label]="'Remove ' + row.item.symbol"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </header>
+
+          @if (row.quote) {
+            <div class="watch-card__price">
+              <span class="price num" [class]="tickClass(row.item.symbol)">
+                {{ row.quote.price | money: 2 }}
+              </span>
+              <span
+                class="badge"
+                [class.badge--gain]="row.quote.changePercent >= 0"
+                [class.badge--loss]="row.quote.changePercent < 0"
+              >
+                {{ row.quote.changePercent | percentChange }}
+              </span>
+            </div>
+          } @else {
+            <p class="muted no-price">
+              No price feed for this symbol yet — it will start ticking shortly.
+            </p>
+          }
+
+          @if (row.triggered) {
+            <footer class="watch-card__alert">
+              <mat-icon>notifications_active</mat-icon>
+              Price moved
+              {{ row.triggered }}
+              your
+              {{ row.triggered === 'above' ? 'upper' : 'lower' }}
+              threshold.
+            </footer>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>

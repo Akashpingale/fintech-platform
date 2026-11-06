@@ -1,0 +1,318 @@
+<div class="page">
+  <app-page-header
+    title="Investment portfolio"
+    [subtitle]="
+      metrics().length +
+      ' holding' +
+      (metrics().length === 1 ? '' : 's') +
+      ' · prices refresh every 5 seconds'
+    "
+  >
+    <div slot="actions" class="row-wrap">
+      <a class="btn btn--ghost" routerLink="/watchlist">
+        <mat-icon>visibility</mat-icon>
+        Watchlist
+      </a>
+      <button type="button" class="btn btn--ghost" (click)="exportCsv()">
+        <mat-icon>download</mat-icon>
+        CSV
+      </button>
+      <button type="button" class="btn btn--ghost" (click)="exportPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        PDF
+      </button>
+      <button type="button" class="btn btn--primary" (click)="addHolding()">
+        <mat-icon>add</mat-icon>
+        Add holding
+      </button>
+    </div>
+  </app-page-header>
+
+  <!-- ─────────────── Summary hero ─────────────── -->
+  <section class="hero-card pf-hero">
+    <div class="pf-hero__main">
+      <span class="hero-card__label">Portfolio value</span>
+      @if (loading()) {
+        <app-skeleton [rows]="1" height="44px" width="240px" />
+      } @else {
+        <div class="big-figure" [countUp]="summary().current" format="money"></div>
+      }
+      <div class="pf-hero__pl">
+        <span
+          class="badge"
+          [class.badge--gain]="summary().pl >= 0"
+          [class.badge--loss]="summary().pl < 0"
+        >
+          {{ summary().plPercent | percentChange }}
+        </span>
+        <span class="pf-hero__pl-amount num">
+          {{ summary().pl >= 0 ? '+' : '−' }}{{
+            (summary().pl < 0 ? -summary().pl : summary().pl) | money
+          }}
+          overall
+        </span>
+      </div>
+    </div>
+
+    <div class="hero-card__row pf-hero__stats">
+      <div class="hero-card__stat">
+        <div class="label">Invested</div>
+        <div class="value">{{ summary().invested | money }}</div>
+      </div>
+      <div class="hero-card__stat">
+        <div class="label">Day change</div>
+        <div class="value">
+          {{ summary().dayChange >= 0 ? '+' : '−' }}{{
+            (summary().dayChange < 0 ? -summary().dayChange : summary().dayChange) | money
+          }}
+        </div>
+      </div>
+      <div class="hero-card__stat">
+        <div class="label" matTooltip="Money-weighted return across your recorded trades">
+          XIRR
+        </div>
+        <div class="value">{{ summary().xirr | number: '1.1-2' }}%</div>
+      </div>
+      <div class="hero-card__stat">
+        <div class="label" matTooltip="Annualised growth over the weighted holding period">
+          CAGR
+        </div>
+        <div class="value">{{ summary().cagr | number: '1.1-2' }}%</div>
+      </div>
+      <div class="hero-card__stat">
+        <div class="label">Risk</div>
+        <div class="value pf-hero__risk">
+          {{ portfolio.riskScore() }}/100
+          <span class="pf-hero__risk-band">{{ portfolio.riskBand() }}</span>
+        </div>
+      </div>
+      <div class="hero-card__stat">
+        <div class="label">Diversification</div>
+        <div class="value">{{ portfolio.diversification() }}/100</div>
+      </div>
+    </div>
+  </section>
+
+  @if (loading()) {
+    <div class="card mt-5"><app-skeleton [rows]="8" height="40px" /></div>
+  } @else if (metrics().length === 0) {
+    <div class="card mt-5">
+      <app-empty-state
+        icon="trending_up"
+        title="No holdings yet"
+        message="Add stocks, mutual funds, crypto, fixed deposits, gold or bonds to track value, returns and allocation in one place."
+        actionLabel="Add your first holding"
+        (action)="addHolding()"
+      />
+    </div>
+  } @else {
+    <!-- ─────────────── Charts ─────────────── -->
+    <div class="grid grid--charts mt-5">
+      <app-chart-card
+        title="Performance"
+        subtitle="Cost basis plus accrued gain over the selected window"
+        type="line"
+        [data]="performanceData()"
+        [options]="performanceOptions()"
+        [height]="300"
+      >
+        <div slot="actions" class="range-tabs" role="tablist" aria-label="Chart range">
+          @for (option of ranges; track option) {
+            <button
+              type="button"
+              role="tab"
+              [attr.aria-selected]="range() === option"
+              [class.active]="range() === option"
+              (click)="setRange(option)"
+            >
+              {{ option }}
+            </button>
+          }
+        </div>
+      </app-chart-card>
+
+      <app-chart-card
+        title="Asset allocation"
+        subtitle="Share of value by asset type"
+        type="doughnut"
+        [data]="allocationData()"
+        [options]="allocationOptions()"
+        [height]="300"
+      />
+    </div>
+
+    <!-- ─────────────── Gainers & losers ─────────────── -->
+    <div class="grid grid--2 mt-5">
+      <section class="card">
+        <h2 class="section-title">Top gainers</h2>
+        @if (portfolio.topGainers().length === 0) {
+          <p class="muted">No holding is in profit right now.</p>
+        } @else {
+          <div class="stack">
+            @for (row of portfolio.topGainers(); track row.holding.id) {
+              <a class="mover" [routerLink]="['/portfolio', row.holding.id]">
+                <span class="mover__symbol">{{ row.holding.symbol }}</span>
+                <span class="mover__name muted">{{ row.holding.name }}</span>
+                <span class="badge badge--gain">
+                  {{ row.plPercent | percentChange: 1 }}
+                </span>
+                <span class="num gain">{{ row.pl | money }}</span>
+              </a>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">Top losers</h2>
+        @if (portfolio.topLosers().length === 0) {
+          <p class="muted">No holding is in loss right now.</p>
+        } @else {
+          <div class="stack">
+            @for (row of portfolio.topLosers(); track row.holding.id) {
+              <a class="mover" [routerLink]="['/portfolio', row.holding.id]">
+                <span class="mover__symbol">{{ row.holding.symbol }}</span>
+                <span class="mover__name muted">{{ row.holding.name }}</span>
+                <span class="badge badge--loss">
+                  {{ row.plPercent | percentChange: 1 }}
+                </span>
+                <span class="num loss">{{ row.pl | money }}</span>
+              </a>
+            }
+          </div>
+        }
+      </section>
+    </div>
+
+    <!-- ─────────────── Holdings table ─────────────── -->
+    <div class="table-wrap mt-5">
+      <div class="table-head">
+        <h2 class="section-title" style="margin: 0">Holdings</h2>
+        <p class="section-subtitle">
+          Click a row to see its buy and sell history.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th class="num">Qty</th>
+              <th class="num">Avg cost</th>
+              <th class="num">Price</th>
+              <th class="num">Day</th>
+              <th class="num">Invested</th>
+              <th class="num">Value</th>
+              <th class="num">P/L</th>
+              <th class="num">Weight</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of metrics(); track row.holding.id) {
+              <tr (click)="open(row)" class="clickable">
+                <td>
+                  <div class="cell-with-avatar">
+                    <span class="cat-avatar tone-primary">
+                      <mat-icon>{{ icons[row.holding.assetType] }}</mat-icon>
+                    </span>
+                    <span>
+                      <span class="cell-title">{{ row.holding.symbol }}</span>
+                      <span class="cell-sub">
+                        {{ row.holding.name }} ·
+                        {{ typeLabel(row.holding.assetType) }}
+                      </span>
+                    </span>
+                  </div>
+                </td>
+                <td class="num">{{ row.holding.quantity }}</td>
+                <td class="num">{{ row.holding.avgBuyPrice | money: 2 }}</td>
+                <td class="num price-cell" [class]="tickClass(row.holding.symbol)">
+                  {{ row.holding.currentPrice | money: 2 }}
+                </td>
+                <td class="num">
+                  <span
+                    class="badge"
+                    [class.badge--gain]="row.dayChangePercent >= 0"
+                    [class.badge--loss]="row.dayChangePercent < 0"
+                  >
+                    {{ row.dayChangePercent | percentChange: 2 }}
+                  </span>
+                </td>
+                <td class="num">{{ row.invested | money }}</td>
+                <td class="num">{{ row.current | money }}</td>
+                <td
+                  class="num"
+                  [class.gain]="row.pl >= 0"
+                  [class.loss]="row.pl < 0"
+                >
+                  {{ row.pl | money }}
+                  <span class="pl-pct">{{ row.plPercent | percentChange: 1 }}</span>
+                </td>
+                <td class="num">
+                  <div class="weight">
+                    <span>{{ row.weight | number: '1.0-1' }}%</span>
+                    <span class="weight__bar">
+                      <span class="weight__fill" [style.width.%]="row.weight"></span>
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─────────────── Rebalancing ─────────────── -->
+    <section class="card mt-5">
+      <h2 class="section-title">Rebalancing suggestion</h2>
+      <p class="section-subtitle mb-4">
+        Compared against the target mix for a
+        <strong>{{ portfolio.riskBand() }}</strong>-risk profile. Suggestions
+        only; this is not financial advice.
+      </p>
+
+      @if (portfolio.rebalance().length === 0) {
+        <p class="muted">
+          Your allocation is within one percentage point of the target in every
+          asset type. Nothing to do.
+        </p>
+      } @else {
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Asset type</th>
+                <th class="num">Current</th>
+                <th class="num">Target</th>
+                <th class="num">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (action of portfolio.rebalance(); track action.type) {
+                <tr>
+                  <td>{{ labels[action.type] }}</td>
+                  <td class="num">{{ action.currentPercent | number: '1.0-1' }}%</td>
+                  <td class="num">{{ action.targetPercent | number: '1.0-1' }}%</td>
+                  <td class="num">
+                    <span
+                      class="badge"
+                      [class.badge--info]="action.deltaAmount > 0"
+                      [class.badge--warn]="action.deltaAmount < 0"
+                    >
+                      {{ rebalanceLabel(action.deltaAmount) }}
+                      {{
+                        (action.deltaAmount < 0 ? -action.deltaAmount : action.deltaAmount)
+                          | money
+                      }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</div>

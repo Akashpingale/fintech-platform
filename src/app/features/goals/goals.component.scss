@@ -1,0 +1,169 @@
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  position: relative;
+  overflow: hidden;
+}
+
+.goal-card--done {
+  border-color: var(--success);
+  box-shadow: 0 0 0 1px var(--success-soft), var(--sh-sm);
+}
+
+.goal-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.goal-card__title {
+  min-width: 0;
+}
+
+.goal-card__name {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin: 0 0 2px;
+}
+
+.inline-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: 3px;
+}
+
+.goal-card__actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0.55;
+  transition: opacity var(--t-fast);
+}
+
+.goal-card:hover .goal-card__actions,
+.goal-card:focus-within .goal-card__actions {
+  opacity: 1;
+}
+
+.goal-card__body {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.goal-card__figures {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.badge-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.btn--compact {
+  padding: 7px 14px;
+  font-size: 0.8125rem;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.icon-action {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--r-sm);
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+
+  mat-icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+  }
+
+  &:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+}
+
+.icon-action--danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+// ───────────────────────── Completion confetti ─────────────────────────
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti__piece {
+  position: absolute;
+  top: -12px;
+  left: calc(8% + var(--i) * 7.5%);
+  width: 7px;
+  height: 11px;
+  border-radius: 2px;
+  opacity: 0;
+  background: var(--primary);
+  animation: confettiFall 2.2s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 70ms);
+
+  &:nth-child(3n) { background: var(--success); }
+  &:nth-child(3n + 1) { background: var(--warning); }
+  &:nth-child(4n) { background: var(--secondary); }
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(260px) rotate(540deg);
+  }
+}
+
+.celebrate {
+  animation: pop 0.4s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti { display: none; }
+}
+
+@media (max-width: 420px) {
+  .goal-card__body {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .goal-card__body app-progress-ring {
+    align-self: center;
+  }
+}

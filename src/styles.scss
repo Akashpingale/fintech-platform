@@ -1,0 +1,198 @@
+// FinTech Platform — Global Styles
+// Design System v1.0 — Section 16 of FINTECH_ANGULAR_IMPLEMENTATION_PLAN.md
+
+@use '@angular/material' as mat;
+// Reusable component classes (Section 16.5). Loaded with @use rather than
+// @import, which Dart Sass 3 removes.
+@use 'styles/components';
+
+// ── Google Fonts ──────────────────────────────────────────────────────────────
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+// ── Angular Material Theme ────────────────────────────────────────────────────
+$fintech-theme: mat.define-theme((
+  color: (theme-type: light, primary: mat.$violet-palette, tertiary: mat.$cyan-palette),
+  typography: (brand-family: 'Inter', plain-family: 'Inter'),
+  density: (scale: -1)
+));
+
+html {
+  @include mat.all-component-themes($fintech-theme);
+}
+
+body.dark-theme {
+  @include mat.all-component-colors(mat.define-theme((
+    color: (theme-type: dark, primary: mat.$violet-palette, tertiary: mat.$cyan-palette)
+  )));
+}
+
+// Material component overrides for fintech feel
+.mat-mdc-card,
+.mat-mdc-table {
+  border-radius: var(--r-lg) !important;
+}
+.mat-mdc-table {
+  background: var(--surface) !important;
+}
+.mat-mdc-header-row {
+  background: var(--surface-2);
+}
+.mat-mdc-row:hover {
+  background: var(--primary-soft);
+}
+.mat-mdc-form-field {
+  width: 100%;
+}
+.mat-mdc-dialog-surface {
+  border-radius: var(--r-xl) !important;
+}
+
+// ── CSS Custom Properties (Design Tokens) ─────────────────────────────────────
+:root {
+  // colours
+  --primary: #4F46E5;
+  --primary-soft: rgba(79, 70, 229, 0.10);
+  --secondary: #0D9488;
+  --success: #16A34A;
+  --success-soft: rgba(22, 163, 74, 0.12);
+  --danger: #DC2626;
+  --danger-soft: rgba(220, 38, 38, 0.12);
+  --warning: #D97706;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+  --bg: #F5F7FB;
+  --surface: #FFFFFF;
+  --surface-2: #EEF1F8;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --border: #E2E8F0;
+
+  // gradients
+  --grad-primary: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  --grad-success: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  --grad-danger: linear-gradient(135deg, #DC2626 0%, #F43F5E 100%);
+  --grad-hero: linear-gradient(135deg, #312E81 0%, #4F46E5 50%, #0D9488 100%);
+
+  // spacing (4px scale)
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+
+  // border radius
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  // shadows
+  --sh-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --sh-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --sh-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+
+  // layout
+  --sidebar-w: 260px;
+  --sidebar-w-collapsed: 76px;
+  --toolbar-h: 64px;
+
+  // typography
+  --fs-display: 2.25rem;
+  --fs-h1: 1.75rem;
+  --fs-h2: 1.25rem;
+  --fs-body: 0.9375rem;
+  --fs-caption: 0.8125rem;
+
+  // motion
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 150ms;
+  --t-base: 250ms;
+}
+
+// ── Dark Theme ────────────────────────────────────────────────────────────────
+body.dark-theme {
+  --primary: #818CF8;
+  --primary-soft: rgba(129, 140, 248, 0.16);
+  --secondary: #2DD4BF;
+  --success: #4ADE80;
+  --success-soft: rgba(74, 222, 128, 0.14);
+  --danger: #F87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+  --warning: #FBBF24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --bg: #0B1020;
+  --surface: #141A2E;
+  --surface-2: #1C2340;
+  --text: #E5E9F5;
+  --text-muted: #94A3B8;
+  --border: #2A3354;
+  --sh-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --sh-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+// ── Reset & Base ──────────────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+  transition: background var(--t-base) var(--ease), color var(--t-base) var(--ease);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+// ── Utility classes ───────────────────────────────────────────────────────────
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+.gain { color: var(--success); }
+.loss { color: var(--danger); }
+
+// ── Focus ring (accessibility) ────────────────────────────────────────────────
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+// ── Custom scrollbar ──────────────────────────────────────────────────────────
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--r-pill); }
+
+// ── Reduced motion ────────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

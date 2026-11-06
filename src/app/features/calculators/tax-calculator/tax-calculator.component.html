@@ -1,0 +1,172 @@
+<div class="page">
+  <app-page-header
+    title="Income tax estimator"
+    subtitle="Compare the old and new Indian regimes for a salaried individual."
+  />
+
+  <app-calculator-nav />
+
+  <div class="grid grid--calc">
+    <!-- Inputs -->
+    <form class="card input-card" [formGroup]="form">
+      <h2 class="section-title">Your income</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Gross annual income (₹)</mat-label>
+        <input matInput type="number" min="0" step="10000" formControlName="grossIncome" />
+        <mat-icon matPrefix>currency_rupee</mat-icon>
+      </mat-form-field>
+
+      <div class="slider-row">
+        <label for="income-slider">
+          Drag to adjust: {{ form.controls.grossIncome.value | money }}
+        </label>
+        <mat-slider min="0" max="5000000" step="25000" discrete>
+          <input matSliderThumb formControlName="grossIncome" id="income-slider" />
+        </mat-slider>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Deductions — 80C, 80D, etc. (₹)</mat-label>
+        <input matInput type="number" min="0" step="5000" formControlName="deductions" />
+        <mat-icon matPrefix>remove_circle_outline</mat-icon>
+        <mat-hint>Only the old regime allows these</mat-hint>
+      </mat-form-field>
+
+      <div class="slider-row">
+        <label for="deduction-slider">
+          Drag to adjust: {{ form.controls.deductions.value | money }}
+        </label>
+        <mat-slider min="0" max="500000" step="5000" discrete>
+          <input matSliderThumb formControlName="deductions" id="deduction-slider" />
+        </mat-slider>
+      </div>
+
+      <div class="verdict mt-4">
+        <mat-icon>verified</mat-icon>
+        <span>
+          The
+          <strong>{{ better() === 'new' ? 'new' : 'old' }} regime</strong>
+          is cheaper for you by
+          {{ comparison().saving | money }} a year.
+        </span>
+      </div>
+    </form>
+
+    <!-- Results -->
+    <div class="stack">
+      <div class="regime-grid">
+        @for (regime of ['old', 'new']; track regime) {
+          @let result = resultFor(regime === 'old' ? 'old' : 'new');
+          <article class="card regime" [class.regime--better]="better() === regime">
+            <header class="regime__head">
+              <h3 class="regime__title">
+                {{ regime === 'old' ? 'Old regime' : 'New regime' }}
+              </h3>
+              @if (better() === regime) {
+                <span class="badge badge--gain">
+                  <mat-icon style="font-size:13px;width:13px;height:13px"
+                    >check_circle</mat-icon
+                  >
+                  Cheaper
+                </span>
+              }
+            </header>
+
+            <div>
+              <div class="regime__total num">{{ result.totalTax | money }}</div>
+              <div class="regime__rate">
+                Effective rate {{ result.effectiveRate | number: '1.1-2' }}% of
+                gross income
+              </div>
+            </div>
+
+            <div>
+              <div class="kv">
+                <span class="kv__key">Gross income</span>
+                <span class="kv__value">{{ result.grossIncome | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Standard deduction</span>
+                <span class="kv__value">−{{ result.standardDeduction | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Other deductions</span>
+                <span class="kv__value">
+                  −{{
+                    result.deductionsApplied - result.standardDeduction | money
+                  }}
+                </span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Taxable income</span>
+                <span class="kv__value">{{ result.taxableIncome | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Tax on slabs</span>
+                <span class="kv__value">{{ result.taxBeforeRebate | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key" matTooltip="Section 87A rebate">Rebate</span>
+                <span class="kv__value gain">−{{ result.rebate | money }}</span>
+              </div>
+              <div class="kv">
+                <span class="kv__key">Health &amp; education cess (4%)</span>
+                <span class="kv__value">{{ result.cess | money }}</span>
+              </div>
+            </div>
+
+            @if (result.slabs.length > 0) {
+              <div class="table-scroll">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Slab</th>
+                      <th class="num">Rate</th>
+                      <th class="num">Tax</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (slab of result.slabs; track slab.from) {
+                      <tr>
+                        <td>{{ slabLabel(slab.from, slab.to) }}</td>
+                        <td class="num slab-rate">
+                          {{ slab.rate * 100 | number: '1.0-0' }}%
+                        </td>
+                        <td class="num">{{ slab.tax | money }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <p class="muted">
+                No tax on this income — it falls inside the zero-rate slab.
+              </p>
+            }
+          </article>
+        }
+      </div>
+
+      <app-chart-card
+        title="Tax payable, side by side"
+        subtitle="Total including cess, after rebate"
+        type="bar"
+        [data]="chartData()"
+        [options]="chartOptions()"
+        [height]="240"
+      />
+
+      <p class="disclaimer">
+        <mat-icon>info_outline</mat-icon>
+        <span>
+          This estimator models the slab structure, standard deduction, section
+          87A rebate and 4% cess for a salaried individual under 60. It does not
+          cover surcharge on high incomes, capital-gains rates, HRA or the many
+          special provisions in the Income Tax Act. Check against the current
+          Finance Act, or a tax professional, before acting on it.
+        </span>
+      </p>
+    </div>
+  </div>
+</div>

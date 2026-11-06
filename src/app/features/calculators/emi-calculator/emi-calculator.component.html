@@ -1,0 +1,212 @@
+<div class="page">
+  <app-page-header
+    title="EMI calculator"
+    subtitle="Work out the monthly instalment and see where every rupee goes."
+  />
+
+  <app-calculator-nav />
+
+  <div class="grid grid--calc">
+    <form class="card input-card" [formGroup]="form">
+      <h2 class="section-title">Loan details</h2>
+
+      <div class="chip-row">
+        @for (preset of presets; track preset.label) {
+          <button type="button" class="chip" (click)="applyPreset(preset)">
+            <mat-icon class="chip-icon">{{ preset.icon }}</mat-icon>
+            {{ preset.label }}
+          </button>
+        }
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Loan amount (₹)</mat-label>
+        <input
+          matInput
+          type="number"
+          min="10000"
+          step="10000"
+          formControlName="loanAmount"
+        />
+        <mat-icon matPrefix>currency_rupee</mat-icon>
+      </mat-form-field>
+
+      <div class="slider-row">
+        <label for="emi-amount">
+          <span>Loan amount</span>
+          <strong>{{ form.controls.loanAmount.value | money }}</strong>
+        </label>
+        <mat-slider min="50000" max="20000000" step="50000" discrete>
+          <input matSliderThumb formControlName="loanAmount" id="emi-amount" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="emi-rate">
+          <span>Interest rate</span>
+          <strong>{{ form.controls.annualRate.value }}% a year</strong>
+        </label>
+        <mat-slider min="0.5" max="30" step="0.1" discrete>
+          <input matSliderThumb formControlName="annualRate" id="emi-rate" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="emi-years">
+          <span>Tenure</span>
+          <strong>
+            {{ form.controls.years.value }}
+            year{{ form.controls.years.value === 1 ? '' : 's' }}
+          </strong>
+        </label>
+        <mat-slider min="1" max="30" step="1" discrete>
+          <input matSliderThumb formControlName="years" id="emi-years" />
+        </mat-slider>
+      </div>
+
+      <p class="disclaimer">
+        <mat-icon>info_outline</mat-icon>
+        <span>
+          Standard reducing-balance EMI: P × r × (1+r)<sup>n</sup> ÷
+          ((1+r)<sup>n</sup> − 1). Processing fees, insurance and prepayment are
+          not modelled.
+        </span>
+      </p>
+    </form>
+
+    <div class="stack">
+      <section class="result-hero">
+        <div class="result-hero__label">Monthly instalment</div>
+        <div class="result-hero__value">{{ result().emi | money }}</div>
+
+        <div class="result-hero__row">
+          <div>
+            <div class="label">Total interest</div>
+            <div class="value">{{ result().totalInterest | money }}</div>
+          </div>
+          <div>
+            <div class="label">Total repayment</div>
+            <div class="value">{{ result().totalPayment | money }}</div>
+          </div>
+          <div>
+            <div class="label">Interest share</div>
+            <div class="value">{{ interestShare() | number: '1.0-1' }}%</div>
+          </div>
+          <div>
+            <div class="label">Instalments</div>
+            <div class="value">{{ form.controls.years.value * 12 }}</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid grid--split">
+        <app-chart-card
+          title="Principal vs interest"
+          subtitle="Split of everything you repay"
+          type="doughnut"
+          [data]="splitData()"
+          [options]="splitOptions()"
+          [height]="240"
+        />
+
+        <app-chart-card
+          title="Yearly payments"
+          subtitle="How the split shifts as the loan matures"
+          type="bar"
+          [data]="balanceData()"
+          [options]="balanceOptions()"
+          [height]="240"
+        />
+      </div>
+
+      <!-- Amortisation schedule -->
+      <div class="table-wrap">
+        <div class="schedule-head">
+          <div>
+            <h2 class="section-title" style="margin: 0">Amortisation schedule</h2>
+            <p class="section-subtitle">
+              Early instalments are mostly interest; the balance tips towards
+              principal over time.
+            </p>
+          </div>
+          <div class="row-wrap">
+            <div class="year-toggle" role="tablist" aria-label="Schedule detail">
+              <button
+                type="button"
+                role="tab"
+                [attr.aria-selected]="scheduleView() === 'year'"
+                [class.active]="scheduleView() === 'year'"
+                (click)="setView('year')"
+              >
+                By year
+              </button>
+              <button
+                type="button"
+                role="tab"
+                [attr.aria-selected]="scheduleView() === 'month'"
+                [class.active]="scheduleView() === 'month'"
+                (click)="setView('month')"
+              >
+                By month
+              </button>
+            </div>
+            <button type="button" class="btn btn--ghost" (click)="exportSchedule()">
+              <mat-icon>download</mat-icon>
+              CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-scroll schedule-scroll">
+          @if (scheduleView() === 'year') {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th class="num">Principal</th>
+                  <th class="num">Interest</th>
+                  <th class="num">Total paid</th>
+                  <th class="num">Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of yearly(); track row.year) {
+                  <tr>
+                    <td class="cell-title">Year {{ row.year }}</td>
+                    <td class="num">{{ row.principal | money }}</td>
+                    <td class="num loss">{{ row.interest | money }}</td>
+                    <td class="num">{{ row.total | money }}</td>
+                    <td class="num">{{ row.balance | money }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th class="num">EMI</th>
+                  <th class="num">Principal</th>
+                  <th class="num">Interest</th>
+                  <th class="num">Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of monthly(); track row.month) {
+                  <tr>
+                    <td>{{ row.month }}</td>
+                    <td class="num">{{ result().emi | money }}</td>
+                    <td class="num">{{ row.principal | money }}</td>
+                    <td class="num loss">{{ row.interest | money }}</td>
+                    <td class="num">{{ row.balance | money }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

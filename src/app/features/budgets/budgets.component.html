@@ -1,0 +1,189 @@
+<div class="page">
+  <app-page-header
+    title="Budgets"
+    [subtitle]="
+      monthName() +
+      ' · ' +
+      progress().length +
+      ' categor' +
+      (progress().length === 1 ? 'y' : 'ies') +
+      ' budgeted'
+    "
+  >
+    <div slot="actions" class="row-wrap">
+      <mat-form-field appearance="outline" class="month-picker">
+        <mat-label>Month</mat-label>
+        <mat-select [ngModel]="month()" (ngModelChange)="month.set($event)">
+          @for (option of monthOptions(); track option.key) {
+            <mat-option [value]="option.key">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (canCopyPrevious()) {
+        <button type="button" class="btn btn--ghost" (click)="copyPrevious()">
+          <mat-icon>content_copy</mat-icon>
+          Copy last month
+        </button>
+      }
+
+      <button type="button" class="btn btn--primary" (click)="add()">
+        <mat-icon>add</mat-icon>
+        Add budget
+      </button>
+    </div>
+  </app-page-header>
+
+  <!-- Overall usage -->
+  @if (progress().length > 0) {
+    <section class="card overall">
+      <div class="overall__head">
+        <div>
+          <h2 class="section-title" style="margin: 0">Total budget usage</h2>
+          <p class="section-subtitle">
+            {{ totals().spent | money }} spent of {{ totals().limit | money }}
+            @if (totals().remaining >= 0) {
+              · {{ totals().remaining | money }} left
+            } @else {
+              · over by {{ -totals().remaining | money }}
+            }
+          </p>
+        </div>
+        <div class="overall__pct num">
+          {{ totals().usage | number: '1.0-0' }}%
+        </div>
+      </div>
+
+      <div class="progress overall__bar">
+        <div
+          class="progress__bar"
+          [class.progress__bar--warn]="totals().usage >= 80 && totals().usage < 100"
+          [class.progress__bar--danger]="totals().usage >= 100"
+          [style.width.%]="totals().usage > 100 ? 100 : totals().usage"
+        ></div>
+      </div>
+
+      @if (totals().overCount > 0 || totals().nearCount > 0) {
+        <div class="row-wrap mt-4">
+          @if (totals().overCount > 0) {
+            <span class="badge badge--loss">
+              <mat-icon class="badge-icon">error_outline</mat-icon>
+              {{ totals().overCount }} over budget
+            </span>
+          }
+          @if (totals().nearCount > 0) {
+            <span class="badge badge--warn">
+              <mat-icon class="badge-icon">warning_amber</mat-icon>
+              {{ totals().nearCount }} near the limit
+            </span>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <!-- Category cards -->
+  @if (loading()) {
+    <div class="grid grid--cards mt-5">
+      @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
+        <div class="card">
+          <app-skeleton [rows]="3" height="18px" />
+        </div>
+      }
+    </div>
+  } @else if (progress().length === 0) {
+    <div class="card mt-5">
+      <app-empty-state
+        icon="account_balance_wallet"
+        [title]="'No budgets set for ' + monthName()"
+        message="Set a monthly limit per category and FinTrack will warn you at 80% and again when you go over."
+        actionLabel="Add your first budget"
+        (action)="add()"
+      />
+    </div>
+  } @else {
+    <div class="grid grid--cards mt-5">
+      @for (row of progress(); track row.budget.id) {
+        <article class="card budget-card">
+          <header class="budget-card__head">
+            <span
+              class="cat-avatar"
+              [style.background]="colourFor(row.budget.category) + '22'"
+              [style.color]="colourFor(row.budget.category)"
+            >
+              <mat-icon>{{ iconFor(row.budget.category) }}</mat-icon>
+            </span>
+            <div class="budget-card__title">
+              <span class="cell-title">{{ row.budget.category }}</span>
+              <span class="cell-sub">{{ statusLabel(row) }}</span>
+            </div>
+            <div class="budget-card__actions">
+              <button
+                type="button"
+                class="icon-action"
+                (click)="edit(row)"
+                matTooltip="Edit limit"
+                [attr.aria-label]="'Edit the ' + row.budget.category + ' limit'"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="icon-action icon-action--danger"
+                (click)="remove(row)"
+                matTooltip="Remove budget"
+                [attr.aria-label]="'Remove the ' + row.budget.category + ' budget'"
+              >
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          </header>
+
+          <div class="budget-card__figures">
+            <span class="num budget-card__spent">{{ row.spent | money }}</span>
+            <span class="muted">of {{ row.budget.limit | money }}</span>
+          </div>
+
+          <div class="progress">
+            <div
+              class="progress__bar"
+              [class.progress__bar--warn]="row.status === 'amber'"
+              [class.progress__bar--danger]="row.status === 'red'"
+              [style.width.%]="row.usage > 100 ? 100 : row.usage"
+            ></div>
+          </div>
+
+          <footer class="budget-card__foot">
+            <span
+              class="badge"
+              [class.badge--gain]="row.status === 'green'"
+              [class.badge--warn]="row.status === 'amber'"
+              [class.badge--loss]="row.status === 'red'"
+            >
+              {{ row.usage | number: '1.0-0' }}% used
+            </span>
+            <span class="num" [class.loss]="row.remaining < 0">
+              {{
+                row.remaining >= 0
+                  ? (row.remaining | money) + ' left'
+                  : (-row.remaining | money) + ' over'
+              }}
+            </span>
+          </footer>
+        </article>
+      }
+    </div>
+
+    <!-- Budget vs actual -->
+    <div class="mt-5">
+      <app-chart-card
+        title="Budget vs actual"
+        [subtitle]="monthName() + ' — limit against recorded spend'"
+        type="bar"
+        [data]="chartData()"
+        [options]="chartOptions()"
+        [height]="340"
+      />
+    </div>
+  }
+</div>

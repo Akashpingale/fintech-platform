@@ -1,0 +1,134 @@
+// Dashboard — Section 16.8
+
+.dash-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+}
+
+.dash-hero__main {
+  position: relative;
+  min-width: 0;
+}
+
+.dash-hero__greeting {
+  margin: var(--sp-2) 0 0;
+  opacity: 0.85;
+  font-size: 0.9375rem;
+}
+
+.dash-hero__actions {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.dash-hero__cta {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  text-decoration: none;
+
+  &:hover { background: rgba(255, 255, 255, 0.28); }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.dash-hero__cta--ghost {
+  background: transparent;
+}
+
+.link-small {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ───────────────────────────── Budget alerts ─────────────────────────────
+.alert-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.alert-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+// ───────────────────────────── Goal rings ─────────────────────────────
+.goal-ring-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--sp-4);
+}
+
+.goal-ring {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.goal-ring__name {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.goal-ring__amount {
+  font-size: var(--fs-caption);
+  color: var(--text-muted);
+}
+
+// ───────────────────────── Recent transactions ─────────────────────────
+.tx-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-2);
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--t-fast);
+
+  &:hover { background: var(--surface-2); }
+}
+
+.tx-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+
+  .cell-sub {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.tx-row__amount {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .dash-hero { align-items: flex-start; }
+  .dash-hero__actions { width: 100%; }
+  .dash-hero__cta { flex: 1; justify-content: center; }
+}

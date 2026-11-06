@@ -1,0 +1,278 @@
+<div class="page">
+  <!-- ─────────────── Hero: net worth ─────────────── -->
+  <section class="hero-card dash-hero">
+    <div class="dash-hero__main">
+      <span class="hero-card__label">Total net worth</span>
+      @if (loading()) {
+        <app-skeleton [rows]="1" height="44px" width="260px" />
+      } @else {
+        <div class="big-figure" [countUp]="appData.netWorth()" format="money"></div>
+      }
+      <p class="dash-hero__greeting">
+        {{ greeting() }}, {{ firstName() }} — here is where your money stands.
+      </p>
+
+      <div class="hero-card__row">
+        <div class="hero-card__stat">
+          <div class="label">Cash balance</div>
+          <div class="value">{{ appData.cashBalance() | money }}</div>
+        </div>
+        <div class="hero-card__stat">
+          <div class="label">Investments</div>
+          <div class="value">{{ portfolio.totalCurrent() | money }}</div>
+        </div>
+        <div class="hero-card__stat">
+          <div class="label">Saved in goals</div>
+          <div class="value">{{ goals.totalSaved() | money }}</div>
+        </div>
+        <div class="hero-card__stat">
+          <div class="label">Health score</div>
+          <div class="value">{{ analytics.health().score }}/100</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-hero__actions">
+      <a class="btn dash-hero__cta" routerLink="/transactions/new">
+        <mat-icon>add</mat-icon>
+        Add transaction
+      </a>
+      <a class="btn dash-hero__cta dash-hero__cta--ghost" routerLink="/analytics">
+        <mat-icon>insights</mat-icon>
+        View insights
+      </a>
+    </div>
+  </section>
+
+  <!-- ─────────────── Summary cards ─────────────── -->
+  <div class="grid grid--stats mt-5">
+    <app-stat-card
+      label="Income this month"
+      icon="south_west"
+      tone="success"
+      [value]="analytics.currentMonth().income"
+      [delta]="analytics.monthOverMonth().income"
+      deltaLabel="vs last month"
+    />
+    <app-stat-card
+      label="Expenses this month"
+      icon="north_east"
+      tone="danger"
+      [value]="analytics.currentMonth().expense"
+      [delta]="analytics.monthOverMonth().expense"
+      deltaLabel="vs last month"
+      [invertDelta]="true"
+    />
+    <app-stat-card
+      label="Saved this month"
+      icon="savings"
+      tone="primary"
+      [value]="analytics.currentMonth().savings"
+      [hint]="
+        'Savings rate ' + (analytics.currentMonth().savingsRatePercent | number: '1.0-0') + '%'
+      "
+    />
+    <app-stat-card
+      label="Portfolio P/L"
+      icon="trending_up"
+      [tone]="portfolio.totalPl() >= 0 ? 'success' : 'danger'"
+      [value]="portfolio.totalPl()"
+      [delta]="portfolio.totalPlPercent()"
+      deltaLabel="overall return"
+    />
+  </div>
+
+  <!-- ─────────────── Charts ─────────────── -->
+  <div class="grid grid--charts mt-5">
+    <app-chart-card
+      title="Income vs expense"
+      subtitle="Last 6 months"
+      type="bar"
+      [data]="cashFlowData()"
+      [options]="cashFlowOptions()"
+      [loading]="loading()"
+      [height]="300"
+      emptyTitle="No transactions yet"
+      emptyMessage="Record income and expenses to see your monthly cash flow."
+    />
+
+    <app-chart-card
+      title="Where the money went"
+      [subtitle]="analytics.currentMonth().label + ' expenses by category'"
+      type="doughnut"
+      [data]="categoryData()"
+      [options]="doughnutOptions()"
+      [loading]="loading()"
+      [height]="300"
+      emptyTitle="No expenses this month"
+      emptyMessage="Your category breakdown appears once you log an expense."
+    />
+  </div>
+
+  <div class="mt-5">
+    <app-chart-card
+      title="Net worth trend"
+      subtitle="Cumulative savings plus current investments and goal balances"
+      type="line"
+      [data]="netWorthData()"
+      [options]="netWorthOptions()"
+      [loading]="loading()"
+      [height]="260"
+      emptyTitle="Not enough history yet"
+      emptyMessage="Once you have a couple of months of transactions this trend fills in."
+    />
+  </div>
+
+  <!-- ─────────────── Alerts, goals, recent activity ─────────────── -->
+  <div class="grid grid--2 mt-5">
+    <!-- Budget alerts -->
+    <section class="card">
+      <div class="flex-between mb-4">
+        <h2 class="section-title" style="margin:0">Budget alerts</h2>
+        <a class="link-small" routerLink="/budgets">Manage budgets</a>
+      </div>
+
+      @if (loading()) {
+        <app-skeleton [rows]="3" height="46px" />
+      } @else if (budgetAlerts().length === 0) {
+        <app-empty-state
+          icon="verified"
+          title="Every budget is on track"
+          message="Nothing has crossed 80% of its limit this month."
+        />
+      } @else {
+        <div class="stack">
+          @for (alert of budgetAlerts(); track alert.budget.id) {
+            <div class="alert-row">
+              <span
+                class="cat-avatar"
+                [style.background]="colourFor(alert.budget.category) + '22'"
+                [style.color]="colourFor(alert.budget.category)"
+              >
+                <mat-icon>{{ iconFor(alert.budget.category) }}</mat-icon>
+              </span>
+              <div class="alert-row__body">
+                <div class="flex-between">
+                  <span class="cell-title">{{ alert.budget.category }}</span>
+                  <span class="num cell-sub">
+                    {{ alert.spent | money }} / {{ alert.budget.limit | money }}
+                  </span>
+                </div>
+                <div class="progress">
+                  <div
+                    class="progress__bar"
+                    [class.progress__bar--warn]="alert.status === 'amber'"
+                    [class.progress__bar--danger]="alert.status === 'red'"
+                    [style.width.%]="alert.usage > 100 ? 100 : alert.usage"
+                  ></div>
+                </div>
+              </div>
+              <span
+                class="badge"
+                [class.badge--warn]="alert.status === 'amber'"
+                [class.badge--loss]="alert.status === 'red'"
+              >
+                {{ alert.usage | number: '1.0-0' }}%
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Goal progress -->
+    <section class="card">
+      <div class="flex-between mb-4">
+        <h2 class="section-title" style="margin:0">Goal progress</h2>
+        <a class="link-small" routerLink="/goals">All goals</a>
+      </div>
+
+      @if (loading()) {
+        <app-skeleton [rows]="2" height="80px" />
+      } @else if (goalRings().length === 0) {
+        <app-empty-state
+          icon="flag"
+          title="No savings goals yet"
+          message="Set a target and FinTrack will track the monthly contribution you need."
+        />
+      } @else {
+        <div class="goal-ring-row">
+          @for (goal of goalRings(); track goal.goal.id) {
+            <div class="goal-ring">
+              <app-progress-ring
+                [percent]="goal.percent"
+                [label]="goal.goal.name"
+                [size]="84"
+              />
+              <div class="goal-ring__name">{{ goal.goal.name }}</div>
+              <div class="goal-ring__amount num">
+                {{ goal.goal.savedAmount | moneyCompact }} /
+                {{ goal.goal.targetAmount | moneyCompact }}
+              </div>
+              <span
+                class="badge"
+                [class.badge--gain]="goal.status === 'achieved'"
+                [class.badge--info]="goal.status === 'on_track'"
+                [class.badge--warn]="goal.status === 'behind'"
+              >
+                {{
+                  goal.status === 'achieved'
+                    ? 'Achieved'
+                    : goal.status === 'on_track'
+                      ? 'On track'
+                      : 'Behind'
+                }}
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </div>
+
+  <!-- Recent transactions -->
+  <section class="card mt-5">
+    <div class="flex-between mb-4">
+      <h2 class="section-title" style="margin:0">Recent transactions</h2>
+      <a class="link-small" routerLink="/transactions">See all</a>
+    </div>
+
+    @if (loading()) {
+      <app-skeleton [rows]="5" height="44px" />
+    } @else if (recent().length === 0) {
+      <app-empty-state
+        icon="receipt_long"
+        title="No transactions recorded"
+        message="Add your first income or expense using the button above."
+      />
+    } @else {
+      <div class="stack">
+        @for (tx of recent(); track tx.id) {
+          <a class="tx-row" [routerLink]="['/transactions', tx.id, 'edit']">
+            <span
+              class="cat-avatar"
+              [style.background]="colourFor(tx.category) + '22'"
+              [style.color]="colourFor(tx.category)"
+            >
+              <mat-icon>{{ iconFor(tx.category) }}</mat-icon>
+            </span>
+            <span class="tx-row__body">
+              <span class="cell-title">{{ tx.category }}</span>
+              <span class="cell-sub">
+                {{ tx.notes || tx.paymentMethod.toUpperCase() }} ·
+                {{ tx.date }}
+              </span>
+            </span>
+            <span
+              class="tx-row__amount num"
+              [class.gain]="tx.type === 'income'"
+              [class.loss]="tx.type === 'expense'"
+            >
+              {{ tx.type === 'income' ? '+' : '−' }}{{ tx.amount | money }}
+            </span>
+          </a>
+        }
+      </div>
+    }
+  </section>
+</div>

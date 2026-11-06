@@ -1,0 +1,131 @@
+.pf-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.pf-hero__main {
+  position: relative;
+}
+
+.pf-hero__pl {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  flex-wrap: wrap;
+
+  .badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+}
+
+.pf-hero__pl-amount {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.pf-hero__stats {
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  padding-top: var(--sp-4);
+  margin-top: 0;
+  gap: var(--sp-5);
+}
+
+.pf-hero__risk {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.pf-hero__risk-band {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+// ───────────────────────────── Movers ─────────────────────────────
+.mover {
+  display: grid;
+  grid-template-columns: 90px 1fr auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2);
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--t-fast);
+
+  &:hover {
+    background: var(--surface-2);
+  }
+}
+
+.mover__symbol {
+  font-weight: 700;
+}
+
+.mover__name {
+  font-size: var(--fs-caption);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ───────────────────────────── Table ─────────────────────────────
+.table-head {
+  padding: var(--sp-4) var(--sp-5) 0;
+}
+
+tr.clickable {
+  cursor: pointer;
+}
+
+.price-cell {
+  font-weight: 600;
+  border-radius: var(--r-sm);
+}
+
+.pl-pct {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.weight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.weight__bar {
+  display: block;
+  width: 56px;
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.weight__fill {
+  display: block;
+  height: 100%;
+  background: var(--grad-primary);
+  border-radius: inherit;
+  transition: width var(--t-base) var(--ease);
+}
+
+@media (max-width: 640px) {
+  .mover {
+    grid-template-columns: 1fr auto;
+    row-gap: 2px;
+  }
+  .mover__name {
+    grid-column: 1 / -1;
+  }
+}

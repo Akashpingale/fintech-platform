@@ -1,0 +1,236 @@
+<div class="page">
+  @if (loading()) {
+    <div class="card"><app-skeleton [rows]="6" height="24px" /></div>
+  } @else if (!metrics()) {
+    <div class="card">
+      <app-empty-state
+        icon="search_off"
+        title="Holding not found"
+        message="It may have been sold in full or deleted."
+      />
+      <a class="btn btn--primary mt-4" routerLink="/portfolio">
+        <mat-icon>arrow_back</mat-icon>
+        Back to portfolio
+      </a>
+    </div>
+  } @else {
+    @let row = metrics()!;
+
+    <app-page-header
+      [title]="row.holding.symbol"
+      [subtitle]="row.holding.name + ' · ' + labels[row.holding.assetType]"
+    >
+      <div slot="actions" class="row-wrap">
+        <a class="btn btn--ghost" routerLink="/portfolio">
+          <mat-icon>arrow_back</mat-icon>
+          Portfolio
+        </a>
+        <button
+          type="button"
+          class="btn btn--ghost"
+          (click)="toggleWatchlist()"
+          [matTooltip]="
+            onWatchlist() ? 'Remove from watchlist' : 'Add to watchlist'
+          "
+        >
+          <mat-icon>{{ onWatchlist() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          {{ onWatchlist() ? 'Unwatch' : 'Watch' }}
+        </button>
+        <button type="button" class="btn btn--ghost" (click)="editHolding()">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button type="button" class="btn btn--primary" (click)="buyMore()">
+          <mat-icon>add_shopping_cart</mat-icon>
+          Buy more
+        </button>
+        <button type="button" class="btn btn--danger" (click)="sell()">
+          <mat-icon>sell</mat-icon>
+          Sell
+        </button>
+      </div>
+    </app-page-header>
+
+    <!-- Live price strip -->
+    <section class="card price-strip">
+      <div class="price-strip__price">
+        <span class="muted">Market price</span>
+        <span class="big-figure price-value" [class]="tickClass()">
+          {{ row.holding.currentPrice | money: 2 }}
+        </span>
+        <span
+          class="badge"
+          [class.badge--gain]="row.dayChangePercent >= 0"
+          [class.badge--loss]="row.dayChangePercent < 0"
+        >
+          {{ row.dayChangePercent | percentChange }} today
+        </span>
+      </div>
+
+      <div class="price-strip__meta">
+        <div class="kv">
+          <span class="kv__key">Quantity held</span>
+          <span class="kv__value">{{ row.holding.quantity }}</span>
+        </div>
+        <div class="kv">
+          <span class="kv__key">Average cost</span>
+          <span class="kv__value">{{ row.holding.avgBuyPrice | money: 2 }}</span>
+        </div>
+        <div class="kv">
+          <span class="kv__key">First bought</span>
+          <span class="kv__value">{{ row.holding.buyDate }}</span>
+        </div>
+        <div class="kv">
+          <span class="kv__key">Held for</span>
+          <span class="kv__value">{{ holdingPeriod().label }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metrics -->
+    <div class="grid grid--stats mt-5">
+      <div class="card stat-card">
+        <div class="stat-card__icon tone-primary">
+          <mat-icon>savings</mat-icon>
+        </div>
+        <div>
+          <div class="stat-card__label">Invested</div>
+          <div class="stat-card__value num">{{ row.invested | money }}</div>
+          <span class="cell-sub">incl. {{ totalFees() | money }} fees</span>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="stat-card__icon tone-primary">
+          <mat-icon>account_balance_wallet</mat-icon>
+        </div>
+        <div>
+          <div class="stat-card__label">Current value</div>
+          <div class="stat-card__value num">{{ row.current | money }}</div>
+          <span class="cell-sub">
+            {{ row.weight | number: '1.0-1' }}% of portfolio
+          </span>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div
+          class="stat-card__icon"
+          [class.tone-success]="row.pl >= 0"
+          [class.tone-danger]="row.pl < 0"
+        >
+          <mat-icon>{{ row.pl >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+        </div>
+        <div>
+          <div class="stat-card__label">Profit / Loss</div>
+          <div
+            class="stat-card__value num"
+            [class.gain]="row.pl >= 0"
+            [class.loss]="row.pl < 0"
+          >
+            {{ row.pl | money }}
+          </div>
+          <span class="cell-sub">{{ row.plPercent | percentChange }}</span>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="stat-card__icon tone-warning">
+          <mat-icon>timeline</mat-icon>
+        </div>
+        <div>
+          <div class="stat-card__label">Annualised (CAGR)</div>
+          <div class="stat-card__value num">
+            {{ holdingCagr() | number: '1.1-2' }}%
+          </div>
+          <span class="cell-sub">
+            {{
+              holdingCagr() === 0
+                ? 'Held under a month'
+                : 'Over ' + holdingPeriod().label
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction ledger -->
+    <div class="table-wrap mt-5">
+      <div class="table-head">
+        <h2 class="section-title" style="margin: 0">Transaction history</h2>
+        <p class="section-subtitle">
+          Every recorded buy and sell for this holding.
+        </p>
+      </div>
+
+      @if (history().length === 0) {
+        <app-empty-state
+          icon="receipt_long"
+          title="No recorded trades"
+          message="This holding was entered directly rather than through a buy transaction."
+        />
+      } @else {
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Side</th>
+                <th class="num">Quantity</th>
+                <th class="num">Price</th>
+                <th class="num">Fees</th>
+                <th class="num">Cash flow</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (trade of history(); track trade.id) {
+                <tr>
+                  <td>{{ trade.date }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [class.badge--info]="trade.side === 'buy'"
+                      [class.badge--warn]="trade.side === 'sell'"
+                    >
+                      <mat-icon class="badge-icon">
+                        {{ trade.side === 'buy' ? 'add' : 'remove' }}
+                      </mat-icon>
+                      {{ trade.side === 'buy' ? 'Buy' : 'Sell' }}
+                    </span>
+                  </td>
+                  <td class="num">{{ trade.quantity }}</td>
+                  <td class="num">{{ trade.price | money: 2 }}</td>
+                  <td class="num">{{ trade.fees | money: 2 }}</td>
+                  <td
+                    class="num"
+                    [class.loss]="trade.side === 'buy'"
+                    [class.gain]="trade.side === 'sell'"
+                  >
+                    {{
+                      flowOf(trade.side, trade.quantity, trade.price, trade.fees)
+                        | money
+                    }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <div class="danger-zone card mt-5">
+      <div>
+        <h2 class="section-title" style="margin: 0">Remove this holding</h2>
+        <p class="section-subtitle">
+          Deletes {{ row.holding.symbol }} and its transaction history. To
+          record an exit instead, use Sell so the realised P/L is kept.
+        </p>
+      </div>
+      <button type="button" class="btn btn--danger" (click)="deleteHolding()">
+        <mat-icon>delete</mat-icon>
+        Delete holding
+      </button>
+    </div>
+  }
+</div>

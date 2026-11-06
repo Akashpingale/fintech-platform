@@ -1,0 +1,54 @@
+.health {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.component__label {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.component__weight {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  margin-left: 6px;
+}
+
+.component__score {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.component {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cat-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.cat-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cat-row__share {
+  width: 52px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}

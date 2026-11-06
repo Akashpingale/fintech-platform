@@ -1,0 +1,142 @@
+<div class="page">
+  <app-page-header
+    title="FD & RD calculator"
+    subtitle="Maturity value for a fixed deposit or a recurring deposit."
+  />
+
+  <app-calculator-nav />
+
+  <div class="grid grid--calc">
+    <form class="card input-card" [formGroup]="form">
+      <h2 class="section-title">Deposit details</h2>
+
+      <div class="mode-switch">
+        <button
+          type="button"
+          class="chip"
+          [class.active]="mode() === 'fd'"
+          [attr.aria-pressed]="mode() === 'fd'"
+          (click)="setMode('fd')"
+        >
+          <mat-icon class="chip-icon">account_balance</mat-icon>
+          Fixed deposit
+        </button>
+        <button
+          type="button"
+          class="chip"
+          [class.active]="mode() === 'rd'"
+          [attr.aria-pressed]="mode() === 'rd'"
+          (click)="setMode('rd')"
+        >
+          <mat-icon class="chip-icon">event_repeat</mat-icon>
+          Recurring deposit
+        </button>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ amountLabel() }} (₹)</mat-label>
+        <input matInput type="number" min="500" step="500" formControlName="amount" />
+        <mat-icon matPrefix>currency_rupee</mat-icon>
+      </mat-form-field>
+
+      <div class="slider-row">
+        <label for="fd-amount">
+          <span>{{ amountLabel() }}</span>
+          <strong>{{ form.controls.amount.value | money }}</strong>
+        </label>
+        <mat-slider
+          [min]="mode() === 'rd' ? 500 : 10000"
+          [max]="mode() === 'rd' ? 100000 : 5000000"
+          [step]="mode() === 'rd' ? 500 : 10000"
+          discrete
+        >
+          <input matSliderThumb formControlName="amount" id="fd-amount" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="fd-rate">
+          <span>Interest rate</span>
+          <strong>{{ form.controls.annualRate.value }}% a year</strong>
+        </label>
+        <mat-slider min="0.5" max="15" step="0.1" discrete>
+          <input matSliderThumb formControlName="annualRate" id="fd-rate" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="fd-years">
+          <span>Tenure</span>
+          <strong>
+            {{ form.controls.years.value }}
+            year{{ form.controls.years.value === 1 ? '' : 's' }}
+          </strong>
+        </label>
+        <mat-slider min="1" max="20" step="1" discrete>
+          <input matSliderThumb formControlName="years" id="fd-years" />
+        </mat-slider>
+      </div>
+
+      @if (mode() === 'fd') {
+        <mat-form-field appearance="outline">
+          <mat-label>Compounding frequency</mat-label>
+          <mat-select formControlName="compounding">
+            @for (option of frequencies; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
+      <p class="disclaimer">
+        <mat-icon>info_outline</mat-icon>
+        <span>
+          @if (mode() === 'rd') {
+            Recurring deposits are compounded monthly, matching how banks
+            calculate them. Returns are shown before TDS and income tax.
+          } @else {
+            Most Indian banks compound fixed deposits quarterly. Returns are
+            shown before TDS and income tax.
+          }
+        </span>
+      </p>
+    </form>
+
+    <div class="stack">
+      <section class="result-hero">
+        <div class="result-hero__label">Maturity amount</div>
+        <div class="result-hero__value">{{ result().maturity | money }}</div>
+
+        <div class="result-hero__row">
+          <div>
+            <div class="label">Total deposited</div>
+            <div class="value">{{ result().invested | money }}</div>
+          </div>
+          <div>
+            <div class="label">Interest earned</div>
+            <div class="value">{{ result().interest | money }}</div>
+          </div>
+          <div>
+            <div class="label">Interest share</div>
+            <div class="value">{{ interestShare() | number: '1.0-1' }}%</div>
+          </div>
+          <div>
+            <div class="label">
+              {{ mode() === 'rd' ? 'Instalments' : 'Deposits' }}
+            </div>
+            <div class="value">{{ result().instalments }}</div>
+          </div>
+        </div>
+      </section>
+
+      <app-chart-card
+        title="Year-by-year growth"
+        subtitle="Amount deposited and interest accrued"
+        type="bar"
+        [data]="chartData()"
+        [options]="chartOptions()"
+        [height]="320"
+      />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,229 @@
+<div class="page">
+  <app-page-header
+    title="Retirement planner"
+    subtitle="How large a corpus you need, and whether your current plan gets there."
+  />
+
+  <app-calculator-nav />
+
+  <div class="grid grid--calc">
+    <form class="card input-card" [formGroup]="form">
+      <h2 class="section-title">About you</h2>
+
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Current age</mat-label>
+          <input matInput type="number" min="18" max="70" formControlName="currentAge" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Retirement age</mat-label>
+          <input
+            matInput
+            type="number"
+            min="40"
+            max="80"
+            formControlName="retirementAge"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Life expectancy</mat-label>
+          <input
+            matInput
+            type="number"
+            min="60"
+            max="100"
+            formControlName="lifeExpectancy"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="slider-row">
+        <label for="ret-expense">
+          <span>Monthly expenses today</span>
+          <strong>{{ form.controls.monthlyExpense.value | money }}</strong>
+        </label>
+        <mat-slider min="10000" max="500000" step="5000" discrete>
+          <input matSliderThumb formControlName="monthlyExpense" id="ret-expense" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="ret-savings">
+          <span>Already saved</span>
+          <strong>{{ form.controls.currentSavings.value | money }}</strong>
+        </label>
+        <mat-slider min="0" max="20000000" step="50000" discrete>
+          <input matSliderThumb formControlName="currentSavings" id="ret-savings" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="ret-contribution">
+          <span>Saving each month</span>
+          <strong>{{ form.controls.monthlyContribution.value | money }}</strong>
+        </label>
+        <mat-slider min="1000" max="300000" step="1000" discrete>
+          <input
+            matSliderThumb
+            formControlName="monthlyContribution"
+            id="ret-contribution"
+          />
+        </mat-slider>
+      </div>
+
+      <h2 class="section-title mt-4">Assumptions</h2>
+
+      <div class="slider-row">
+        <label for="ret-pre">
+          <span>Return before retirement</span>
+          <strong>{{ form.controls.preReturn.value }}%</strong>
+        </label>
+        <mat-slider min="1" max="25" step="0.5" discrete>
+          <input matSliderThumb formControlName="preReturn" id="ret-pre" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="ret-post">
+          <span>Return after retirement</span>
+          <strong>{{ form.controls.postReturn.value }}%</strong>
+        </label>
+        <mat-slider min="1" max="15" step="0.5" discrete>
+          <input matSliderThumb formControlName="postReturn" id="ret-post" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="ret-inflation">
+          <span>Inflation</span>
+          <strong>{{ form.controls.inflation.value }}%</strong>
+        </label>
+        <mat-slider min="0" max="15" step="0.5" discrete>
+          <input matSliderThumb formControlName="inflation" id="ret-inflation" />
+        </mat-slider>
+      </div>
+    </form>
+
+    <div class="stack">
+      <section class="result-hero">
+        <div class="result-hero__label">Corpus you need at retirement</div>
+        <div class="result-hero__value">{{ plan().requiredCorpus | money }}</div>
+
+        <div class="result-hero__row">
+          <div>
+            <div class="label">Your plan reaches</div>
+            <div class="value">{{ plan().projectedCorpus | money }}</div>
+          </div>
+          <div>
+            <div class="label">{{ plan().onTrack ? 'Surplus' : 'Shortfall' }}</div>
+            <div class="value">
+              {{ (plan().gap < 0 ? -plan().gap : plan().gap) | money }}
+            </div>
+          </div>
+          <div>
+            <div class="label">Coverage</div>
+            <div class="value">{{ plan().coverage | number: '1.0-0' }}%</div>
+          </div>
+          <div>
+            <div class="label">Years to retirement</div>
+            <div class="value">{{ plan().yearsToRetire }}</div>
+          </div>
+        </div>
+      </section>
+
+      <div
+        class="card verdict-card"
+        [class.verdict-card--good]="plan().onTrack"
+        [class.verdict-card--bad]="!plan().onTrack"
+      >
+        <mat-icon>{{ plan().onTrack ? 'verified' : 'priority_high' }}</mat-icon>
+        <div>
+          @if (plan().onTrack) {
+            <strong>You are on track.</strong>
+            <p>
+              At {{ form.controls.monthlyContribution.value | money }} a month
+              you reach the target with
+              {{ (plan().gap < 0 ? -plan().gap : plan().gap) | money }} to
+              spare. Any extra saving builds a buffer against lower returns.
+            </p>
+          } @else {
+            <strong>There is a gap to close.</strong>
+            <p>
+              Saving another
+              {{ plan().additionalMonthly | money }} a month — about
+              {{
+                (plan().additionalMonthly + form.controls.monthlyContribution.value)
+                  | money
+              }}
+              in total — would get you to the target, assuming a
+              {{ form.controls.preReturn.value }}% return.
+            </p>
+          }
+        </div>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3 class="section-title">How the corpus is sized</h3>
+          <div class="kv">
+            <span class="kv__key">Monthly expenses today</span>
+            <span class="kv__value">
+              {{ form.controls.monthlyExpense.value | money }}
+            </span>
+          </div>
+          <div class="kv">
+            <span class="kv__key">
+              Same lifestyle at age {{ form.controls.retirementAge.value }}
+            </span>
+            <span class="kv__value">{{ plan().expenseAtRetirement | money }}</span>
+          </div>
+          <div class="kv">
+            <span class="kv__key">Years to fund</span>
+            <span class="kv__value">{{ plan().retirementYears }}</span>
+          </div>
+          <div class="kv">
+            <span class="kv__key">Corpus required</span>
+            <span class="kv__value">{{ plan().requiredCorpus | money }}</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Where your corpus comes from</h3>
+          <div class="kv">
+            <span class="kv__key">Growth of existing savings</span>
+            <span class="kv__value">{{ plan().savingsGrowth | money }}</span>
+          </div>
+          <div class="kv">
+            <span class="kv__key">Growth of monthly saving</span>
+            <span class="kv__value">{{ plan().contributionGrowth | money }}</span>
+          </div>
+          <div class="kv">
+            <span class="kv__key">Total at retirement</span>
+            <span class="kv__value">{{ plan().projectedCorpus | money }}</span>
+          </div>
+        </div>
+      </div>
+
+      <app-chart-card
+        title="Corpus build-up"
+        subtitle="Projected savings against the corpus you need"
+        type="line"
+        [data]="chartData()"
+        [options]="chartOptions()"
+        [height]="320"
+      />
+
+      <p class="disclaimer">
+        <mat-icon>info_outline</mat-icon>
+        <span>
+          Withdrawals during retirement are discounted at the real return —
+          the post-retirement return net of inflation — so the corpus keeps
+          funding the same lifestyle as prices rise. Constant returns and
+          constant inflation are simplifying assumptions; actual markets vary.
+        </span>
+      </p>
+    </div>
+  </div>
+</div>

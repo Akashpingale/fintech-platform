@@ -1,0 +1,105 @@
+<div class="page">
+  <app-page-header
+    title="Lumpsum & compound interest"
+    subtitle="Grow a one-time investment at a compounding rate."
+  />
+
+  <app-calculator-nav />
+
+  <div class="grid grid--calc">
+    <form class="card input-card" [formGroup]="form">
+      <h2 class="section-title">Your investment</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Amount invested (₹)</mat-label>
+        <input matInput type="number" min="1000" step="1000" formControlName="principal" />
+        <mat-icon matPrefix>currency_rupee</mat-icon>
+      </mat-form-field>
+
+      <div class="slider-row">
+        <label for="lump-principal">
+          <span>Amount</span>
+          <strong>{{ form.controls.principal.value | money }}</strong>
+        </label>
+        <mat-slider min="10000" max="10000000" step="10000" discrete>
+          <input matSliderThumb formControlName="principal" id="lump-principal" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="lump-return">
+          <span>Expected annual return</span>
+          <strong>{{ form.controls.annualReturn.value }}%</strong>
+        </label>
+        <mat-slider min="1" max="30" step="0.5" discrete>
+          <input matSliderThumb formControlName="annualReturn" id="lump-return" />
+        </mat-slider>
+      </div>
+
+      <div class="slider-row">
+        <label for="lump-years">
+          <span>Holding period</span>
+          <strong>
+            {{ form.controls.years.value }}
+            year{{ form.controls.years.value === 1 ? '' : 's' }}
+          </strong>
+        </label>
+        <mat-slider min="1" max="40" step="1" discrete>
+          <input matSliderThumb formControlName="years" id="lump-years" />
+        </mat-slider>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Compounding frequency</mat-label>
+        <mat-select formControlName="compounding">
+          @for (option of frequencies; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <p class="disclaimer">
+        <mat-icon>info_outline</mat-icon>
+        <span>
+          Applies A = P(1 + r/n)<sup>nt</sup>. More frequent compounding raises
+          the effective rate, shown alongside the result.
+        </span>
+      </p>
+    </form>
+
+    <div class="stack">
+      <section class="result-hero">
+        <div class="result-hero__label">Value at the end of the period</div>
+        <div class="result-hero__value">{{ result().futureValue | money }}</div>
+
+        <div class="result-hero__row">
+          <div>
+            <div class="label">Amount invested</div>
+            <div class="value">{{ result().principal | money }}</div>
+          </div>
+          <div>
+            <div class="label">Interest earned</div>
+            <div class="value">{{ result().totalInterest | money }}</div>
+          </div>
+          <div>
+            <div class="label">Effective annual rate</div>
+            <div class="value">{{ result().effectiveRate | number: '1.2-2' }}%</div>
+          </div>
+          <div>
+            <div class="label">Money multiplies by</div>
+            <div class="value">{{ result().multiple | number: '1.2-2' }}×</div>
+          </div>
+        </div>
+      </section>
+
+      <app-chart-card
+        title="Growth curve"
+        subtitle="Value against the flat invested amount"
+        type="line"
+        [data]="chartData()"
+        [options]="chartOptions()"
+        [height]="320"
+      />
+    </div>
+  </div>
+</div>
